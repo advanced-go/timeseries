@@ -4,7 +4,7 @@
 ## accesslog
 
 [AccessLog][timeseriespkg] provides templated Get and Put functions for access log timeseries information. The functions use gotemplates/postgresql module
-to interact with TimescaleDB.
+to interact with [TimescaleDB][postgresqlpkg].
 
 ~~~
 // GetConstraints - interface defining constraints for the Get function
@@ -40,3 +40,4 @@ func PutByte[E runtime.ErrorHandler](ctx context.Context, contentLocation string
 ~~~
 
 [timeseriespkg]: <https://pkg.go.dev/github.com/gotemplates/timeseries/accesslog>
+[postgresqlpkg]: <https://pkg.go.dev/github.com/gotemplates/postgresql/pgxsql>
