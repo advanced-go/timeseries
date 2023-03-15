@@ -25,5 +25,7 @@
   "Retry":false,
   "RetryRateLimit":150,
   "RetryRateBurst":10,
-  "Failover":false
+  "Failover":false,
+  "Proxy": false
+
 }
