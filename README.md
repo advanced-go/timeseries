@@ -3,25 +3,40 @@
 
 ## accesslog
 
-[AccessLog][timeseriespkg] implements types that build SQL statements based on the configured attributes. Support is also available for selecting
-PostgreSQL functions for timestamps and next values.
+[AccessLog][timeseriespkg] provides templated Get and Put functions for access log timeseries information. The functions use gotemplates/postgresql module
+to interact with TimescaleDB.
 
 ~~~
-// ExpandSelect - given a template, expand the template to build a WHERE clause if configured
-func ExpandSelect(template string, where []Attr) (string, error) {
+// GetConstraints - interface defining constraints for the Get function
+type GetConstraints interface {
+	[]content.Entry | []content.EntryV2
 }
 
-// WriteInsert - build a SQL insert statement with a VALUES list
-func WriteInsert(sql string, values [][]any) (string, error) {
+// Get - templated function to query for a set of AccessLog entries from a datastore
+func Get[E runtime.ErrorHandler, T GetConstraints](ctx context.Context, values map[string][]string) (T, *runtime.Status) {
+    // implementation details
 }
 
-// WriteUpdate - build a SQL update statement, including SET and WHERE clauses
-func WriteUpdate(sql string, attrs []Attr, where []Attr) (string, error) {
+// GetByte - templated function to query for a set of AccessLog entries from a datastore
+func GetByte[E runtime.ErrorHandler](ctx context.Context, contentLocation string, values map[string][]string) ([]byte, *runtime.Status) {
+    // implementation details
 }
 
-// WriteDelete - build a SQL delete statement with a WHERE clause
-func WriteDelete(sql string, where []Attr) (string, error) {
+// PutConstraints - generic constraints
+type PutConstraints interface {
+	[]content.Entry | []content.EntryV2
 }
+
+// Put - templated function to Put a set of log entries into a datastore
+func Put[E runtime.ErrorHandler, T PutConstraints](ctx context.Context, t T) (pgxsql.CommandTag, *runtime.Status) {
+    // implementation details
+}
+
+// PutByte - templated function to Put a set of log entries into a datastore
+func PutByte[E runtime.ErrorHandler](ctx context.Context, contentLocation string, data []byte) (pgxsql.CommandTag, *runtime.Status) {
+    // implementation details
+}
+
 ~~~
 
 [timeseriespkg]: <https://pkg.go.dev/github.com/gotemplates/timeseries/accesslog>
