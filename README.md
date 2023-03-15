@@ -1,4 +1,4 @@
-# go/templates/timeseries
+# timeseries
 
 
 ## accesslog
@@ -24,3 +24,4 @@ func WriteDelete(sql string, where []Attr) (string, error) {
 }
 ~~~
 
+[timeseriespkg]: <https://pkg.go.dev/github.com/gotemplates/timeseries/accesslog>
