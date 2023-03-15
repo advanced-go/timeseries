@@ -3,8 +3,8 @@
 
 ## accesslog
 
-[AccessLog][timeseriespkg] provides templated Get and Put functions for access log timeseries information. The functions use gotemplates/postgresql module
-to interact with [TimescaleDB][postgresqlpkg].
+[AccessLog][timeseriespkg] provides templated Get and Put functions for access log timeseries information. The functions use [PostgreSQL][postgresqlpkg]
+to interact with TimescaleDB.
 
 ~~~
 // GetConstraints - interface defining constraints for the Get function
