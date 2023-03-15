@@ -3,7 +3,6 @@ package content
 import (
 	"errors"
 	"fmt"
-	"github.com/gotemplates/timeseries/accesslog"
 	"time"
 )
 
@@ -131,61 +130,61 @@ type Entry struct {
 func (Entry) Scan(columnNames []string, values []any) (log Entry, err error) {
 	for i, name := range columnNames {
 		switch name {
-		case accesslog.CustomerIdName:
+		case CustomerIdName:
 			log.CustomerId = values[i].(string)
-		case accesslog.StartTimeName:
+		case StartTimeName:
 			log.StartTime = values[i].(time.Time)
-		case accesslog.DurationName:
+		case DurationName:
 			log.Duration = values[i].(int64)
-		case accesslog.DurationStrName:
+		case DurationStrName:
 			log.DurationString = values[i].(string)
-		case accesslog.TrafficName:
+		case TrafficName:
 			log.Traffic = values[i].(string)
-		case accesslog.RegionName:
+		case RegionName:
 			log.Region = values[i].(string)
-		case accesslog.ZoneName:
+		case ZoneName:
 			log.Zone = values[i].(string)
-		case accesslog.SubZoneName:
+		case SubZoneName:
 			log.SubZone = values[i].(string)
-		case accesslog.ServiceName:
+		case ServiceName:
 			log.Service = values[i].(string)
-		case accesslog.InstanceIdName:
+		case InstanceIdName:
 			log.InstanceId = values[i].(string)
-		case accesslog.RouteNameName:
+		case RouteNameName:
 			log.RouteName = values[i].(string)
-		case accesslog.RequestIdName:
+		case RequestIdName:
 			log.RequestId = values[i].(string)
-		case accesslog.UrlName:
+		case UrlName:
 			log.Url = values[i].(string)
-		case accesslog.ProtocolName:
+		case ProtocolName:
 			log.Protocol = values[i].(string)
-		case accesslog.MethodName:
+		case MethodName:
 			log.Method = values[i].(string)
-		case accesslog.HostName:
+		case HostName:
 			log.Host = values[i].(string)
-		case accesslog.PathName:
+		case PathName:
 			log.Path = values[i].(string)
-		case accesslog.StatusCodeName:
+		case StatusCodeName:
 			log.StatusCode = values[i].(int32)
-		case accesslog.BytesSentName:
+		case BytesSentName:
 			log.BytesSent = values[i].(int64)
-		case accesslog.StatusFlagsName:
+		case StatusFlagsName:
 			log.StatusFlags = values[i].(string)
-		case accesslog.TimeoutName:
+		case TimeoutName:
 			log.Timeout = values[i].(int32)
-		case accesslog.RateLimitName:
+		case RateLimitName:
 			log.RateLimit = values[i].(float64)
-		case accesslog.RateBurstName:
+		case RateBurstName:
 			log.RateBurst = values[i].(int32)
-		case accesslog.RetryName:
+		case RetryName:
 			log.Retry = values[i].(bool)
-		case accesslog.RetryRateLimitName:
+		case RetryRateLimitName:
 			log.RetryRateLimit = values[i].(float64)
-		case accesslog.RetryRateBurstName:
+		case RetryRateBurstName:
 			log.RetryRateBurst = values[i].(int32)
-		case accesslog.FailoverName:
+		case FailoverName:
 			log.Failover = values[i].(bool)
-		case accesslog.ProxyName:
+		case ProxyName:
 			log.Proxy = values[i].(bool)
 		default:
 			err = errors.New(fmt.Sprintf("invalid field name: %v", name))
