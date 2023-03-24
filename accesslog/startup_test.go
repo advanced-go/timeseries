@@ -3,8 +3,8 @@ package accesslog
 import (
 	"errors"
 	"fmt"
-	"github.com/gotemplates/host/messaging"
-	"github.com/gotemplates/postgresql/pgxsql"
+	"github.com/go-sre/host/messaging"
+	"github.com/go-sre/postgresql/pgxsql"
 	"time"
 )
 

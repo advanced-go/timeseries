@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/go-http-utils/headers"
-	"github.com/gotemplates/core/runtime"
-	"github.com/gotemplates/postgresql/pgxsql"
-	"github.com/gotemplates/timeseries/accesslog/content"
+	"github.com/go-sre/core/runtime"
+	"github.com/go-sre/postgresql/pgxsql"
+	"github.com/go-sre/timeseries/accesslog/content"
 )
 
 // GetConstraints - interface defining constraints for the Get function

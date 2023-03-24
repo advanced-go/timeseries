@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/gotemplates/core/runtime"
-	"github.com/gotemplates/postgresql/pgxdml"
-	"github.com/gotemplates/postgresql/pgxsql"
-	"github.com/gotemplates/timeseries/accesslog/content"
+	"github.com/go-sre/core/runtime"
+	"github.com/go-sre/postgresql/pgxdml"
+	"github.com/go-sre/postgresql/pgxsql"
+	"github.com/go-sre/timeseries/accesslog/content"
 )
 
 // PutConstraints - generic constraints
