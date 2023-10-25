@@ -5,10 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/go-sre/core/runtime"
-	"github.com/go-sre/postgresql/pgxdml"
-	"github.com/go-sre/postgresql/pgxsql"
-	"github.com/go-sre/timeseries/accesslog/content"
+	"github.com/go-ai-agent/core/runtime"
+	"github.com/go-ai-agent/postgresql/pgxsql"
+	"github.com/go-ai-agent/timeseries/accesslog/content"
 )
 
 // PutConstraints - generic constraints
@@ -45,7 +44,7 @@ func Put[E runtime.ErrorHandler, T PutConstraints](ctx context.Context, t T) (pg
 		}
 	}
 	if count > 0 {
-		return pgxsql.Exec[E](ctx, int64(count), req)
+		return pgxsql.Exec[E](ctx, req)
 	}
 	return pgxsql.CommandTag{}, runtime.NewStatusOK()
 }
@@ -62,23 +61,23 @@ func PutByte[E runtime.ErrorHandler](ctx context.Context, contentLocation string
 		var events []content.Entry
 		err := json.Unmarshal(data, &events)
 		if err != nil {
-			return pgxsql.CommandTag{}, e.HandleWithContext(ctx, putLoc, err)
+			return pgxsql.CommandTag{}, e.Handle(ctx, putLoc, err)
 		}
 		return Put[E, []content.Entry](ctx, events)
 	case content.Variant2Uri:
 		var events []content.EntryV2
 		err := json.Unmarshal(data, &events)
 		if err != nil {
-			return pgxsql.CommandTag{}, e.HandleWithContext(ctx, putLoc, err)
+			return pgxsql.CommandTag{}, e.Handle(ctx, putLoc, err)
 		}
 		return Put[E, []content.EntryV2](ctx, events)
 	default:
 		err1 := contentError(contentLocation)
-		return pgxsql.CommandTag{}, e.HandleWithContext(ctx, getLoc, err1).SetCode(runtime.StatusInvalidArgument).SetContent(err1)
+		return pgxsql.CommandTag{}, e.Handle(ctx, getLoc, err1).SetCode(runtime.StatusInvalidArgument).SetContent(err1)
 	}
 }
 
-func delete[E runtime.ErrorHandler](ctx context.Context, where []pgxdml.Attr) (pgxsql.CommandTag, *runtime.Status) {
+func delete[E runtime.ErrorHandler](ctx context.Context, where []runtime.Attr) (pgxsql.CommandTag, *runtime.Status) {
 	if len(where) > 0 {
 		return exec[E](ctx, pgxsql.NewDeleteRequest(content.ResourceNSS, deleteSql, where))
 	}
@@ -86,5 +85,5 @@ func delete[E runtime.ErrorHandler](ctx context.Context, where []pgxdml.Attr) (p
 }
 
 func exec[E runtime.ErrorHandler](ctx context.Context, req *pgxsql.Request) (pgxsql.CommandTag, *runtime.Status) {
-	return pgxsql.Exec[E](ctx, pgxsql.NullCount, req)
+	return pgxsql.Exec[E](ctx, req)
 }

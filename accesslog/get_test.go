@@ -2,9 +2,9 @@ package accesslog
 
 import (
 	"fmt"
-	"github.com/go-sre/core/runtime"
-	"github.com/go-sre/postgresql/pgxsql"
-	"github.com/go-sre/timeseries/accesslog/content"
+	"github.com/go-ai-agent/core/runtime"
+	"github.com/go-ai-agent/postgresql/pgxsql"
+	"github.com/go-ai-agent/timeseries/accesslog/content"
 	"net/url"
 )
 

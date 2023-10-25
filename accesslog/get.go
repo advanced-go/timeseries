@@ -3,10 +3,10 @@ package accesslog
 import (
 	"context"
 	"encoding/json"
-	"github.com/go-http-utils/headers"
-	"github.com/go-sre/core/runtime"
-	"github.com/go-sre/postgresql/pgxsql"
-	"github.com/go-sre/timeseries/accesslog/content"
+	"github.com/go-ai-agent/core/runtime"
+	//"github.com/go-http-utils/headers"
+	"github.com/go-ai-agent/postgresql/pgxsql"
+	"github.com/go-ai-agent/timeseries/accesslog/content"
 )
 
 // GetConstraints - interface defining constraints for the Get function
@@ -31,13 +31,13 @@ func Get[E runtime.ErrorHandler, T GetConstraints](ctx context.Context, values m
 	case *[]content.Entry:
 		events, err := pgxsql.Scan[content.Entry](rows)
 		if err != nil {
-			return nil, e.HandleWithContext(ctx, getLoc, err)
+			return nil, e.Handle(ctx, getLoc, err)
 		}
 		*ptr = events
 	case *[]content.EntryV2:
 		events, err := pgxsql.Scan[content.EntryV2](rows)
 		if err != nil {
-			return nil, e.HandleWithContext(ctx, getLoc, err)
+			return nil, e.Handle(ctx, getLoc, err)
 		}
 		*ptr = events
 	}
@@ -65,12 +65,12 @@ func GetByte[E runtime.ErrorHandler](ctx context.Context, contentLocation string
 		buf, err = json.Marshal(events)
 	default:
 		err1 := contentError(contentLocation)
-		return nil, e.HandleWithContext(ctx, getLoc, err1).SetCode(runtime.StatusInvalidArgument).SetContent(err1)
+		return nil, e.Handle(ctx, getLoc, err1).SetCode(runtime.StatusInvalidArgument).SetContent(err1)
 	}
 	if err != nil {
-		return nil, e.HandleWithContext(ctx, getLoc, err)
+		return nil, e.Handle(ctx, getLoc, err)
 	}
-	return buf, runtime.NewStatusOK().SetMetadata(headers.ContentType, runtime.ContentTypeJson)
+	return buf, runtime.NewStatusOK() //.SetMetadata(runtime.ContentType, runtime.ContentTypeJson)
 }
 
 func ping[E runtime.ErrorHandler](ctx context.Context) *runtime.Status {

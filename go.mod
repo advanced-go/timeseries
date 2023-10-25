@@ -1,12 +1,10 @@
-module github.com/go-sre/timeseries
+module github.com/go-ai-agent/timeseries
 
-go 1.18
+go 1.20
 
 require (
-	github.com/go-http-utils/headers v0.0.0-20181008091004-fed159eddc2a
-	github.com/go-sre/core v0.0.0-20230324100724-3810a3e68a8b
-	github.com/go-sre/host v0.0.0-20230324102237-1361055e0900
-	github.com/go-sre/postgresql v0.0.0-20230324103247-d9fa1f1a3782
+	github.com/go-ai-agent/core v0.0.0-20231025102105-8b6f4eea373d
+	github.com/go-ai-agent/postgresql v0.0.0-20231025104031-00b490e52c3f
 )
 
 require (
@@ -16,10 +14,10 @@ require (
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/pgx/v5 v5.2.0 // indirect
 	github.com/jackc/puddle/v2 v2.1.2 // indirect
-	go.uber.org/atomic v1.10.0 // indirect
-	golang.org/x/crypto v0.7.0 // indirect
-	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/text v0.8.0 // indirect
-	google.golang.org/grpc v1.54.0 // indirect
+	go.uber.org/atomic v1.11.0 // indirect
+	golang.org/x/crypto v0.10.0 // indirect
+	golang.org/x/sync v0.3.0 // indirect
+	golang.org/x/text v0.10.0 // indirect
+	google.golang.org/grpc v1.56.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 )
