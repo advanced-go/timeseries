@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-ai-agent/core/runtime"
+	"github.com/go-ai-agent/core/runtime/runtimetest"
 	"github.com/go-ai-agent/postgresql/pgxsql"
 	"github.com/go-ai-agent/timeseries/accesslog/content"
 	"time"
@@ -82,17 +83,17 @@ func ExamplePut() {
 	} else {
 		defer pgxsql.ClientShutdown()
 		events := []content.Entry{event, event2}
-		tag, status := Put[runtime.DebugError, []content.Entry](nil, events)
-		fmt.Printf("test: Put[runtime.DebugError,[]Entry](nil,events) -> [status:%v] [result:%v]\n", status, tag)
+		tag, status := Put[runtimetest.DebugError, []content.Entry](nil, events)
+		fmt.Printf("test: Put[runtimetest.DebugError,[]Entry](nil,events) -> [status:%v] [result:%v]\n", status, tag)
 
 		//body := &httptest.ReaderCloser{Reader: bytes.NewReader(buf), Err: nil}
 		//req, _ := http.NewRequest("", "www.google.com", body)
-		//status = Put[runtime.DebugError, *http.Request](nil, RscId, req)
+		//status = Put[runtimetest.DebugError, *http.Request](nil, RscId, req)
 		//fmt.Printf("test: Put(nil,[]byte) -> [status:%v]\n", status)
 	}
 
 	//Output:
-	//test: Put[runtime.DebugError,[]Entry](nil,events) -> [status:OK] [result:{INSERT 0 2 2 true false false false}]
+	//test: Put[runtimetest.DebugError,[]Entry](nil,events) -> [status:OK] [result:{INSERT 0 2 2 true false false false}]
 
 }
 
@@ -105,13 +106,13 @@ func ExamplePutByte() {
 		events := []content.Entry{event, event2}
 
 		buf, _ := json.Marshal(&events)
-		tag, status := PutByte[runtime.DebugError](nil, "", buf)
-		fmt.Printf("test: PutByte[runtime.DebugError](nil,VersionCurrent,buf) -> [status:%v] [result:%v]\n", status, tag)
+		tag, status := PutByte[runtimetest.DebugError](nil, "", buf)
+		fmt.Printf("test: PutByte[runtimetest.DebugError](nil,VersionCurrent,buf) -> [status:%v] [result:%v]\n", status, tag)
 
 	}
 
 	//Output:
-	//test: PutByte[runtime.DebugError](nil,VersionCurrent,buf) -> [status:OK] [result:{INSERT 0 2 2 true false false false}]
+	//test: PutByte[runtimetest.DebugError](nil,VersionCurrent,buf) -> [status:OK] [result:{INSERT 0 2 2 true false false false}]
 
 }
 
@@ -125,7 +126,7 @@ func ExampleUpdate() {
 		where := []runtime.Attr{{"region", "iowa"}}
 		req := pgxsql.NewUpdateRequest(updateRsc, updateSql, set, where)
 
-		tag, status := exec[runtime.DebugError](nil, req)
+		tag, status := exec[runtimetest.DebugError](nil, req)
 		fmt.Printf("test: Update(nil,req) -> [status:%v] [result:%v]\n", status, tag)
 
 	}
@@ -143,7 +144,7 @@ func ExampleDelete() {
 		defer pgxsql.ClientShutdown()
 		where := []runtime.Attr{{"region", "texas"}}
 
-		tag, status := delete[runtime.DebugError](nil, where)
+		tag, status := delete[runtimetest.DebugError](nil, where)
 		fmt.Printf("test: Delete(nil,where) -> [status:%v] [result:%v]\n", status, tag)
 
 	}

@@ -5,14 +5,11 @@ import (
 	"github.com/go-ai-agent/core/host"
 	"github.com/go-ai-agent/core/runtime"
 	"github.com/go-ai-agent/postgresql/pgxsql"
-	"reflect"
 	"time"
 )
 
 var (
-	Uri      = pkgPath
 	c        = make(chan host.Message, 1)
-	pkgPath  = reflect.TypeOf(any(pkg{})).PkgPath()
 	duration = time.Second * 4
 	location = pkgPath + "/startup"
 )
@@ -29,7 +26,7 @@ var messageHandler host.MessageHandler = func(msg host.Message) {
 			}
 			time.Sleep(wait)
 		}
-		host.ReplyTo(msg, runtime.NewStatusError(errors.New("startup error: pgxsql not started")).SetDuration(time.Since(start)).SetLocation(location))
+		host.ReplyTo(msg, runtime.NewStatusError(0, location, errors.New("startup error: pgxsql not started")).SetDuration(time.Since(start)))
 	case host.ShutdownEvent:
 	}
 }

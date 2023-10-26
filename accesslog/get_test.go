@@ -2,7 +2,7 @@ package accesslog
 
 import (
 	"fmt"
-	"github.com/go-ai-agent/core/runtime"
+	"github.com/go-ai-agent/core/runtime/runtimetest"
 	"github.com/go-ai-agent/postgresql/pgxsql"
 	"github.com/go-ai-agent/timeseries/accesslog/content"
 	"net/url"
@@ -14,8 +14,8 @@ func ExamplePing() {
 		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsql.IsStarted())
 	} else {
 		defer pgxsql.ClientShutdown()
-		status := ping[runtime.DebugError](nil)
-		fmt.Printf("test: Ping[runtime.DebugError](nil) -> [status:%v] [started:%v]\n", status, pgxsql.IsStarted())
+		status := ping[runtimetest.DebugError](nil)
+		fmt.Printf("test: Ping[runtimetest.DebugError](nil) -> [status:%v] [started:%v]\n", status, pgxsql.IsStarted())
 	}
 
 	//Output:
@@ -24,8 +24,8 @@ func ExamplePing() {
 }
 
 func ExampleGetByteInvalidArguement() {
-	events, status := GetByte[runtime.DebugError](nil, "urn:timeseries.access-log.v5", nil)
-	fmt.Printf("test: GetByte[runtime.DebugError](nil,invalid,nil) -> [status:%v] [content:%v] [events:%v]\n", status, string(status.Content()), events)
+	events, status := GetByte[runtimetest.DebugError](nil, "urn:timeseries.access-log.v5", nil)
+	fmt.Printf("test: GetByte[runtimetest.DebugError](nil,invalid,nil) -> [status:%v] [content:%v] [events:%v]\n", status, string(status.Content()), events)
 
 	//Output:
 	//[[] github.com/idiomatic-go/timeseries/accesslog/get [invalid content location: [urn:timeseries.access-log.v5]]]
@@ -39,8 +39,8 @@ func ExampleGet() {
 		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsql.IsStarted())
 	} else {
 		defer pgxsql.ClientShutdown()
-		events, status1 := Get[runtime.DebugError, []content.Entry](nil, nil)
-		fmt.Printf("test: Get[runtime.DebugError,[]Entry](nil,nil) -> [status:%v] [events:%v]\n", status1, events)
+		events, status1 := Get[runtimetest.DebugError, []content.Entry](nil, nil)
+		fmt.Printf("test: Get[runtimetest.DebugError,[]Entry](nil,nil) -> [status:%v] [events:%v]\n", status1, events)
 
 	}
 
@@ -55,7 +55,7 @@ func ExampleGetByte() {
 		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsql.IsStarted())
 	} else {
 		defer pgxsql.ClientShutdown()
-		buf, status := GetByte[runtime.DebugError](nil, "", nil)
+		buf, status := GetByte[runtimetest.DebugError](nil, "", nil)
 		fmt.Printf("test: GetByte[runtime.DebugError](nil,current,nil) -> [status:%v] [buf:%v]\n", status, string(buf))
 
 	}
@@ -73,7 +73,7 @@ func ExampleGetFromQuery() {
 		defer pgxsql.ClientShutdown()
 
 		u, _ := url.Parse("https://google.com/search?region=oregon")
-		events, status1 := Get[runtime.DebugError, []content.Entry](nil, u.Query())
+		events, status1 := Get[runtimetest.DebugError, []content.Entry](nil, u.Query())
 		fmt.Printf("test: Get[runtime.DebugError,[]Entry](nil,url) -> [status:%v] [events:%v]\n", status1, len(events))
 
 	}
