@@ -3,8 +3,8 @@ package accesslog
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-ai-agent/core/runtime"
 	"github.com/go-ai-agent/core/runtime/runtimetest"
+	"github.com/go-ai-agent/postgresql/pgxdml"
 	"github.com/go-ai-agent/postgresql/pgxsql"
 	"github.com/go-ai-agent/timeseries/accesslog/content"
 	"time"
@@ -122,8 +122,8 @@ func ExampleUpdate() {
 		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsql.IsStarted())
 	} else {
 		defer pgxsql.ClientShutdown()
-		set := []runtime.Attr{{"zone", "vinton"}}
-		where := []runtime.Attr{{"region", "iowa"}}
+		set := []pgxdml.Attr{{"zone", "vinton"}}
+		where := []pgxdml.Attr{{"region", "iowa"}}
 		req := pgxsql.NewUpdateRequest(updateRsc, updateSql, set, where)
 
 		tag, status := exec[runtimetest.DebugError](nil, req)
@@ -142,7 +142,7 @@ func ExampleDelete() {
 		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsql.IsStarted())
 	} else {
 		defer pgxsql.ClientShutdown()
-		where := []runtime.Attr{{"region", "texas"}}
+		where := []pgxdml.Attr{{"region", "texas"}}
 
 		tag, status := delete[runtimetest.DebugError](nil, where)
 		fmt.Printf("test: Delete(nil,where) -> [status:%v] [result:%v]\n", status, tag)

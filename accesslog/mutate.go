@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-ai-agent/core/runtime"
+	"github.com/go-ai-agent/postgresql/pgxdml"
 	"github.com/go-ai-agent/postgresql/pgxsql"
 	"github.com/go-ai-agent/timeseries/accesslog/content"
 )
@@ -29,7 +30,7 @@ func Put[E runtime.ErrorHandler, T PutConstraints](ctx context.Context, t T) (pg
 	var req *pgxsql.Request
 
 	if t == nil {
-		return pgxsql.CommandTag{}, runtime.NewStatusCode(runtime.StatusInvalidArgument)
+		return pgxsql.CommandTag{}, runtime.NewStatus(runtime.StatusInvalidArgument)
 	}
 	switch events := any(t).(type) {
 	case []content.Entry:
@@ -54,7 +55,7 @@ func PutByte[E runtime.ErrorHandler](ctx context.Context, contentLocation string
 	var e E
 
 	if data == nil {
-		return pgxsql.CommandTag{}, runtime.NewStatusCode(runtime.StatusInvalidArgument)
+		return pgxsql.CommandTag{}, runtime.NewStatus(runtime.StatusInvalidArgument)
 	}
 	switch contentLocation {
 	case "":
@@ -77,7 +78,7 @@ func PutByte[E runtime.ErrorHandler](ctx context.Context, contentLocation string
 	}
 }
 
-func delete[E runtime.ErrorHandler](ctx context.Context, where []runtime.Attr) (pgxsql.CommandTag, *runtime.Status) {
+func delete[E runtime.ErrorHandler](ctx context.Context, where []pgxdml.Attr) (pgxsql.CommandTag, *runtime.Status) {
 	if len(where) > 0 {
 		return exec[E](ctx, pgxsql.NewDeleteRequest(content.ResourceNSS, deleteSql, where))
 	}
