@@ -6,12 +6,16 @@ github.com/go-ai-agent/core v0.0.0-20231027120438-08bd22313a63 h1:ZoCRnMrXJcdCwN
 github.com/go-ai-agent/core v0.0.0-20231027120438-08bd22313a63/go.mod h1:eJTo4x8bOsmTTlhCB7maKxD5SNAIHaYqSe+r6aoXONM=
 github.com/go-ai-agent/core v0.0.0-20231027223822-d27808c1bc5b h1:RR5Cf50F7j1Ywlh0ak+Lh0YdZZ72uUoCwlmyv8RCbC0=
 github.com/go-ai-agent/core v0.0.0-20231027223822-d27808c1bc5b/go.mod h1:eJTo4x8bOsmTTlhCB7maKxD5SNAIHaYqSe+r6aoXONM=
+github.com/go-ai-agent/core v0.0.0-20231028173542-e29bb72cd95c h1:sW8UJcxsU0XUMarXMTEtsIk69aCwuy9Rv5CvPbaPTto=
+github.com/go-ai-agent/core v0.0.0-20231028173542-e29bb72cd95c/go.mod h1:eJTo4x8bOsmTTlhCB7maKxD5SNAIHaYqSe+r6aoXONM=
 github.com/go-ai-agent/postgresql v0.0.0-20231027112726-e0c016415f53 h1:KFwy4t06FoxBS60XL1QdHDHAzu03zwwxTQQZxMJoCf0=
 github.com/go-ai-agent/postgresql v0.0.0-20231027112726-e0c016415f53/go.mod h1:kntU9Symeo+04wD+8yhPJP3plc700/P1uly6vEowaVY=
 github.com/go-ai-agent/postgresql v0.0.0-20231027122405-5bfbb0fdc1b9 h1:DnGxT6xFaMj8EiZJZLx0TrfF0AtfgKiGTQxrO2wd7kU=
 github.com/go-ai-agent/postgresql v0.0.0-20231027122405-5bfbb0fdc1b9/go.mod h1:LxF8Vt2CSLgPBhuujnJPI+sRyYzztZb25zVAX7FhxSk=
 github.com/go-ai-agent/postgresql v0.0.0-20231027230501-e5dd6392719a h1:xjebNseSccsj6MNrn8sL1YfFF8grgZTwmNQIfr18+P8=
 github.com/go-ai-agent/postgresql v0.0.0-20231027230501-e5dd6392719a/go.mod h1:k1NvfH0c0Jvyxoqea0JgJLOlHojK/iKU674BOUDmjvw=
+github.com/go-ai-agent/postgresql v0.0.0-20231028121647-0283c8870923 h1:AzZqtUr8+5mqRVQHNTWYSn4bN5qqbageNcQGsKymw2g=
+github.com/go-ai-agent/postgresql v0.0.0-20231028121647-0283c8870923/go.mod h1:NARL4KIDYN42DE5qXnV550aOlYsMdJKIw4CQcDvW+DQ=
 github.com/golang/protobuf v1.5.0/go.mod h1:FsONVRAS9T7sI+LIUmWTfcYkHO4aIWwzhcaSAoJOfIk=
 github.com/golang/protobuf v1.5.3 h1:KhyjKVUg7Usr/dYsdSqoFveMYd5ko72D+zANwlG1mmg=
 github.com/golang/protobuf v1.5.3/go.mod h1:XVQd3VNwM+JqD3oG2Ue2ip4fOMUkwXdXDdiuN0vRsmY=
