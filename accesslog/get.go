@@ -23,8 +23,9 @@ func Get[E runtime.ErrorHandler, T GetConstraints](ctx context.Context, values m
 	var e E
 	var t T
 
-	rows, status := pgxsql.Query[E](ctx, pgxsql.NewQueryRequestFromValues(content.ResourceNSS, accessLogSelect, values))
+	rows, status := pgxsql.Query(ctx, pgxsql.NewQueryRequestFromValues(content.ResourceNSS, accessLogSelect, values))
 	if !status.OK() {
+		e.HandleStatus(status, ctx, getLoc)
 		return nil, status
 	}
 	switch ptr := any(&t).(type) {

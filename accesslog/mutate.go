@@ -45,7 +45,7 @@ func Put[E runtime.ErrorHandler, T PutConstraints](ctx context.Context, t T) (pg
 		}
 	}
 	if count > 0 {
-		return pgxsql.Exec[E](ctx, req)
+		return pgxsql.Exec(ctx, req)
 	}
 	return pgxsql.CommandTag{}, runtime.NewStatusOK()
 }
@@ -86,5 +86,5 @@ func delete[E runtime.ErrorHandler](ctx context.Context, where []pgxdml.Attr) (p
 }
 
 func exec[E runtime.ErrorHandler](ctx context.Context, req *pgxsql.Request) (pgxsql.CommandTag, *runtime.Status) {
-	return pgxsql.Exec[E](ctx, req)
+	return pgxsql.Exec(ctx, req)
 }

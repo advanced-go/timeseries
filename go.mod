@@ -3,8 +3,8 @@ module github.com/go-ai-agent/timeseries
 go 1.20
 
 require (
-	github.com/go-ai-agent/core v0.0.0-20231027120438-08bd22313a63
-	github.com/go-ai-agent/postgresql v0.0.0-20231027122405-5bfbb0fdc1b9
+	github.com/go-ai-agent/core v0.0.0-20231027223822-d27808c1bc5b
+	github.com/go-ai-agent/postgresql v0.0.0-20231027230501-e5dd6392719a
 )
 
 require (

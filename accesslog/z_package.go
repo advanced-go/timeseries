@@ -11,8 +11,8 @@ import (
 type pkg struct{}
 
 var (
-	pkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
-	pkgPath = runtime.PathFromUri(pkgUri)
+	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
+	pkgPath = runtime.PathFromUri(PkgUri)
 
 	started int64
 )
@@ -44,17 +44,18 @@ func timeseriesHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Re
 		data, status := GetByte[runtime.LogError](runtime.ContextWithRequest(r), httpx.GetContentLocation(r), r.URL.Query())
 		if !status.OK() {
 			var e E
-			e.HandleStatus(status, nil)
+			e.HandleStatus(status, nil, "")
 			httpx.WriteMinResponse[E](w, status)
 			return status
 		}
 		httpx.WriteResponse[E](w, data, status, httpx.ContentType, httpx.ContentTypeJson)
 		return status
 	case http.MethodPut:
+		var e E
+
 		buf, status := httpx.ReadAll(r.Body)
 		if !status.OK() {
-			var e E
-			e.HandleStatus(status, nil)
+			e.HandleStatus(status, nil, "")
 			httpx.WriteMinResponse[E](w, status)
 			return status
 		}
@@ -65,8 +66,7 @@ func timeseriesHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Re
 		}
 		_, status = PutByte[runtime.LogError](runtime.ContextWithRequest(r), httpx.GetContentLocation(r), buf)
 		if !status.OK() {
-			var e E
-			e.HandleStatus(status, nil)
+			e.HandleStatus(status, nil, "")
 			httpx.WriteMinResponse[E](w, status)
 			return status
 		}
