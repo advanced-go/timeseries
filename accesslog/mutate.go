@@ -17,7 +17,7 @@ type PutConstraints interface {
 }
 
 var (
-	putLoc = pkgPath + "/put"
+	putLoc = pkgPath + "/Put"
 )
 
 func contentError(contentLocation string) error {
@@ -45,7 +45,12 @@ func Put[E runtime.ErrorHandler, T PutConstraints](ctx context.Context, t T) (pg
 		}
 	}
 	if count > 0 {
-		return pgxsql.Exec(ctx, req)
+		var e E
+		ct, status := pgxsql.Exec(ctx, req)
+		if !status.OK() {
+			e.HandleStatus(status, ctx, putLoc)
+		}
+		return ct, status
 	}
 	return pgxsql.CommandTag{}, runtime.NewStatusOK()
 }

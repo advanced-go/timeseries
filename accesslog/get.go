@@ -15,7 +15,7 @@ type GetConstraints interface {
 }
 
 var (
-	getLoc = pkgPath + "/get"
+	getLoc = pkgPath + "/Get"
 )
 
 // Get - templated function to query for a set of AccessLog entries from a datastore
