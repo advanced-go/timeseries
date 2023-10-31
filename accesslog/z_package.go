@@ -2,7 +2,7 @@ package accesslog
 
 import (
 	"github.com/go-ai-agent/core/httpx"
-	json2 "github.com/go-ai-agent/core/json"
+	"github.com/go-ai-agent/core/json"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
 	"reflect"
@@ -111,7 +111,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 			return status
 		}
 		var buf []byte
-		buf, status = json2.Marshal(entries)
+		buf, status = json.Marshal(entries)
 		if !status.OK() {
 			e.HandleStatus(status, requestId, locHttpHandler)
 			httpx.WriteResponse[E](w, nil, status, nil)

@@ -53,7 +53,7 @@ func put(ctx context.Context, contentUri string, data any) (pgxsql.CommandTag, *
 	if count > 0 {
 		ct, status := pgxsql.Exec(ctx, req)
 		if !status.OK() {
-			return pgxsql.CommandTag{}, status
+			return pgxsql.CommandTag{}, status.AddLocation(putLoc)
 		}
 		return ct, status
 	}
@@ -72,14 +72,27 @@ func putByte(ctx context.Context, contentUri string, data []byte) (pgxsql.Comman
 		if !status.OK() {
 			return pgxsql.CommandTag{}, status
 		}
-		return put(ctx, contentUri, data)
+		var tag = pgxsql.CommandTag{}
+
+		tag, status = put(ctx, contentUri, data)
+		if !status.OK() {
+			status.AddLocation(putByteLoc)
+		}
+		return tag, status
 	case EntryV2Uri:
 		var events []EntryV2
+
 		status := json.Unmarshal(data, &events)
-		if status != nil {
+		if !status.OK() {
 			return pgxsql.CommandTag{}, status
 		}
-		return put(ctx, contentUri, events)
+		var tag = pgxsql.CommandTag{}
+
+		tag, status = put(ctx, contentUri, events)
+		if !status.OK() {
+			status.AddLocation(putByteLoc)
+		}
+		return tag, status
 	default:
 		return pgxsql.CommandTag{}, runtime.NewStatusError(runtime.StatusInvalidArgument, putByteLoc, contentError(contentUri))
 	}
