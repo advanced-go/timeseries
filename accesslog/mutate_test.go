@@ -3,10 +3,8 @@ package accesslog
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-ai-agent/core/runtime/runtimetest"
 	"github.com/go-ai-agent/postgresql/pgxdml"
 	"github.com/go-ai-agent/postgresql/pgxsql"
-	"github.com/go-ai-agent/timeseries/accesslog/content"
 	"time"
 )
 
@@ -15,7 +13,7 @@ const (
 	updateSql = "UPDATE access_log"
 )
 
-var event = content.Entry{
+var event = Entry{
 	CustomerId:     "customer11",
 	StartTime:      time.Now().UTC().AddDate(1, 2, 0), //ate(2023, 1, 1, 14, 12, 15, 251097, time.UTC),
 	Duration:       450,
@@ -45,7 +43,7 @@ var event = content.Entry{
 	Failover:       false,
 }
 
-var event2 = content.Entry{
+var event2 = Entry{
 	CustomerId: "customer12",
 	StartTime:  time.Date(2023, 2, 20, 5, 45, 12, 123456, time.UTC),
 	//StartTime:      time.Now().UTC(),
@@ -76,15 +74,15 @@ var event2 = content.Entry{
 	Failover:       true,
 }
 
-func ExamplePut() {
+func Example_put() {
 	err := testStartup()
 	if err != nil {
 		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsql.IsStarted())
 	} else {
 		defer pgxsql.ClientShutdown()
-		events := []content.Entry{event, event2}
-		tag, status := Put[runtimetest.DebugError, []content.Entry](nil, events)
-		fmt.Printf("test: Put[runtimetest.DebugError,[]Entry](nil,events) -> [status:%v] [result:%v]\n", status, tag)
+		events := []Entry{event, event2}
+		tag, status := put(nil, "", events)
+		fmt.Printf("test: put[runtimetest.DebugError,[]Entry](nil,events) -> [status:%v] [result:%v]\n", status, tag)
 
 		//body := &httptest.ReaderCloser{Reader: bytes.NewReader(buf), Err: nil}
 		//req, _ := http.NewRequest("", "www.google.com", body)
@@ -97,17 +95,17 @@ func ExamplePut() {
 
 }
 
-func ExamplePutByte() {
+func Example_putByte() {
 	err := testStartup()
 	if err != nil {
 		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsql.IsStarted())
 	} else {
 		defer pgxsql.ClientShutdown()
-		events := []content.Entry{event, event2}
+		events := []Entry{event, event2}
 
 		buf, _ := json.Marshal(&events)
-		tag, status := PutByte[runtimetest.DebugError](nil, "", buf)
-		fmt.Printf("test: PutByte[runtimetest.DebugError](nil,VersionCurrent,buf) -> [status:%v] [result:%v]\n", status, tag)
+		tag, status := putByte(nil, "", buf)
+		fmt.Printf("test: putByte[runtimetest.DebugError](nil,VersionCurrent,buf) -> [status:%v] [result:%v]\n", status, tag)
 
 	}
 
@@ -116,7 +114,7 @@ func ExamplePutByte() {
 
 }
 
-func ExampleUpdate() {
+func Example_update() {
 	err := testStartup()
 	if err != nil {
 		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsql.IsStarted())
@@ -126,8 +124,8 @@ func ExampleUpdate() {
 		where := []pgxdml.Attr{{"region", "iowa"}}
 		req := pgxsql.NewUpdateRequest(updateRsc, updateSql, set, where)
 
-		tag, status := exec[runtimetest.DebugError](nil, req)
-		fmt.Printf("test: Update(nil,req) -> [status:%v] [result:%v]\n", status, tag)
+		tag, status := exec(nil, req)
+		fmt.Printf("test: update(nil,req) -> [status:%v] [result:%v]\n", status, tag)
 
 	}
 
@@ -136,7 +134,7 @@ func ExampleUpdate() {
 
 }
 
-func ExampleDelete() {
+func Example_remove() {
 	err := testStartup()
 	if err != nil {
 		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsql.IsStarted())
@@ -144,8 +142,8 @@ func ExampleDelete() {
 		defer pgxsql.ClientShutdown()
 		where := []pgxdml.Attr{{"region", "texas"}}
 
-		tag, status := delete[runtimetest.DebugError](nil, where)
-		fmt.Printf("test: Delete(nil,where) -> [status:%v] [result:%v]\n", status, tag)
+		tag, status := remove(nil, where)
+		fmt.Printf("test: remove(nil,where) -> [status:%v] [result:%v]\n", status, tag)
 
 	}
 
