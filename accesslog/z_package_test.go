@@ -5,8 +5,8 @@ import "fmt"
 func Example_PackageUri() {
 	fmt.Printf("test: PkgUri -> %v\n", PkgUri)
 	fmt.Printf("test: pkgPath -> %v\n", pkgPath)
-	fmt.Printf("test: EntryLocationUri -> %v\n", EntryUri)
-	fmt.Printf("test: EntryV2LocationUri -> %v\n", EntryV2Uri)
+	fmt.Printf("test: EntryUri -> %v\n", EntryUri)
+	fmt.Printf("test: EntryV2Uri -> %v\n", EntryV2Uri)
 
 	//Output:
 	//test: PkgUri -> github.com/go-ai-agent/timeseries/accesslog

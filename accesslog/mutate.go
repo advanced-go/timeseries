@@ -2,13 +2,12 @@ package accesslog
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/go-ai-agent/core/json"
 	"github.com/go-ai-agent/core/runtime"
 	"github.com/go-ai-agent/postgresql/pgxdml"
 	"github.com/go-ai-agent/postgresql/pgxsql"
-	"net/http"
 )
 
 var (
@@ -69,16 +68,16 @@ func putByte(ctx context.Context, contentUri string, data []byte) (pgxsql.Comman
 	switch contentUri {
 	case "", CurrentEntryUri:
 		var events []Entry
-		err := json.Unmarshal(data, &events)
-		if err != nil {
-			return pgxsql.CommandTag{}, runtime.NewStatusError(http.StatusInternalServerError, putByteLoc, err)
+		status := json.Unmarshal(data, &events)
+		if !status.OK() {
+			return pgxsql.CommandTag{}, status
 		}
 		return put(ctx, contentUri, data)
 	case EntryV2Uri:
 		var events []EntryV2
-		err := json.Unmarshal(data, &events)
-		if err != nil {
-			return pgxsql.CommandTag{}, runtime.NewStatusError(http.StatusInternalServerError, putByteLoc, err)
+		status := json.Unmarshal(data, &events)
+		if status != nil {
+			return pgxsql.CommandTag{}, status
 		}
 		return put(ctx, contentUri, events)
 	default:
