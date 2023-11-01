@@ -46,10 +46,17 @@ type InConstraints interface {
 }
 
 func TypeHandler[T InConstraints](r *http.Request, body T) (any, *runtime.Status) {
-	return typeHandler[runtime.LogError, T](r, body)
+	return typeHandler[runtime.LogError](r, body)
 }
 
-func typeHandler[E runtime.ErrorHandler, T InConstraints](r *http.Request, body T) (any, *runtime.Status) {
+// newTypeHandler - templated function providing a TypeHandlerFn via a closure
+func newTypeHandler[E runtime.ErrorHandler](r *http.Request, body any) runtime.TypeHandlerFn {
+	return func(r *http.Request, body any) (any, *runtime.Status) {
+		return typeHandler[E](r, body)
+	}
+}
+
+func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runtime.Status) {
 	var e E
 
 	if r == nil {

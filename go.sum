@@ -1,9 +1,9 @@
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
-github.com/go-ai-agent/core v0.0.0-20231031155602-c6ddce196513 h1:PGsnzqbedQUXKpDSR6NBZhz7MwlMUWVk+c8npAoPYCk=
-github.com/go-ai-agent/core v0.0.0-20231031155602-c6ddce196513/go.mod h1:p9dPJMtXhk7hvA5XjVQAbC6xMtOIgeWQXHNeEZ5DM58=
-github.com/go-ai-agent/postgresql v0.0.0-20231030192109-ad30d55be076 h1:i7lZv1m+1lmxxosfxro7c2dfA0eOduljnVZD74L11Q4=
-github.com/go-ai-agent/postgresql v0.0.0-20231030192109-ad30d55be076/go.mod h1:0n8+Wq+xOla8QvK+KVIjFHEcb21coMsi8329pmUUBMc=
+github.com/go-ai-agent/core v0.0.0-20231101124801-b49ec0b96fd0 h1:a0xBo4bVdmbuUa2d9qPbM11YGTxpo61qo55D3tsX530=
+github.com/go-ai-agent/core v0.0.0-20231101124801-b49ec0b96fd0/go.mod h1:p9dPJMtXhk7hvA5XjVQAbC6xMtOIgeWQXHNeEZ5DM58=
+github.com/go-ai-agent/postgresql v0.0.0-20231031163437-d154929523b3 h1:T1ITZE9glLv+X+fHqOcwenbFFdDHCEkXBp+22AxzrLE=
+github.com/go-ai-agent/postgresql v0.0.0-20231031163437-d154929523b3/go.mod h1:PV1SdTO/5OmdoMkHvIOv4ik7T/OYlrmPSkcseAEd+vY=
 github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
 github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/jackc/pgpassfile v1.0.0 h1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=
