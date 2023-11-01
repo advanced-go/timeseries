@@ -6,7 +6,6 @@ import (
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
 	"reflect"
-	"sync/atomic"
 )
 
 type pkg struct{}
@@ -23,22 +22,7 @@ var (
 	locHttpHandler = pkgPath + "/httpHandler"
 	resourceNID    = "timeseries"
 	resourceNSS    = "access-log"
-
-	started int64
 )
-
-// IsStarted - returns status of startup
-func IsStarted() bool {
-	return atomic.LoadInt64(&started) != 0
-}
-
-func setStarted() {
-	atomic.StoreInt64(&started, 1)
-}
-
-func resetStarted() {
-	atomic.StoreInt64(&started, 0)
-}
 
 // InConstraints - interface defining constraints for the Get function
 type InConstraints interface {
@@ -50,7 +34,7 @@ func TypeHandler[T InConstraints](r *http.Request, body T) (any, *runtime.Status
 }
 
 // newTypeHandler - templated function providing a TypeHandlerFn via a closure
-func newTypeHandler[E runtime.ErrorHandler](r *http.Request, body any) runtime.TypeHandlerFn {
+func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
 	return func(r *http.Request, body any) (any, *runtime.Status) {
 		return typeHandler[E](r, body)
 	}
