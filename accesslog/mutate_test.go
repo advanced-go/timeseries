@@ -77,7 +77,7 @@ var event2 = Entry{
 func Example_put() {
 	err := testStartup()
 	if err != nil {
-		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsql.IsStarted())
+		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsqlIsStarted())
 	} else {
 		defer pgxsql.ClientShutdown()
 		events := []Entry{event, event2}
@@ -98,7 +98,7 @@ func Example_put() {
 func Example_putByte() {
 	err := testStartup()
 	if err != nil {
-		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsql.IsStarted())
+		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsqlIsStarted())
 	} else {
 		defer pgxsql.ClientShutdown()
 		events := []Entry{event, event2}
@@ -117,7 +117,7 @@ func Example_putByte() {
 func Example_update() {
 	err := testStartup()
 	if err != nil {
-		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsql.IsStarted())
+		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsqlIsStarted())
 	} else {
 		defer pgxsql.ClientShutdown()
 		set := []pgxdml.Attr{{"zone", "vinton"}}
@@ -137,7 +137,7 @@ func Example_update() {
 func Example_remove() {
 	err := testStartup()
 	if err != nil {
-		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsql.IsStarted())
+		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsqlIsStarted())
 	} else {
 		defer pgxsql.ClientShutdown()
 		where := []pgxdml.Attr{{"region", "texas"}}

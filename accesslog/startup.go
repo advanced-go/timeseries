@@ -17,7 +17,7 @@ var (
 )
 
 // IsStarted - determine if this package has completed startup
-func IsStarted() bool {
+func isStarted() bool {
 	return atomic.LoadInt64(&started) != 0
 }
 
@@ -35,7 +35,8 @@ var messageHandler startup.MessageHandler = func(msg startup.Message) {
 	switch msg.Event {
 	case startup.StartupEvent:
 		for wait := time.Duration(float64(duration) * 0.25); duration >= 0; duration -= wait {
-			if pgxsql.IsStarted() {
+			_, status := pgxsql.TypeHandler(startup.StatusRequest, nil)
+			if status.OK() {
 				startup.ReplyTo(msg, runtime.NewStatusOK().SetDuration(time.Since(start)))
 				setStarted()
 				return

@@ -13,13 +13,13 @@ const (
 )
 
 func Example_Startup() {
-	fmt.Printf("test: IsStarted() -> %v\n", pgxsql.IsStarted())
+	fmt.Printf("test: IsStarted() -> %v\n", pgxsqlIsStarted())
 	err := testStartup()
 	if err != nil {
 		fmt.Printf("test: ClientStartup() -> [error:%v]\n", err)
 	} else {
 		defer pgxsql.ClientShutdown()
-		fmt.Printf("test: ClientStartup() -> [started:%v]\n", pgxsql.IsStarted())
+		fmt.Printf("test: ClientStartup() -> [started:%v]\n", pgxsqlIsStarted())
 		time.Sleep(time.Second * 4)
 	}
 
@@ -30,7 +30,7 @@ func Example_Startup() {
 }
 
 func testStartup() error {
-	if pgxsql.IsStarted() {
+	if pgxsqlIsStarted() {
 		return nil
 	}
 	if serviceUrl == "" {

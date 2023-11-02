@@ -24,6 +24,27 @@ var (
 	resourceNSS    = "access-log"
 )
 
+// newTypeHandler - templated function providing a TypeHandlerFn via a closure
+//func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
+//	return func(r *http.Request, body any) (any, *runtime.Status) {
+//		return typeHandler[E](r, body)
+//	}
+//}
+
+func CastEntry(t any) []Entry {
+	if e, ok := t.([]Entry); ok {
+		return e
+	}
+	return nil
+}
+
+func CastEntryV2(t any) []EntryV2 {
+	if e, ok := t.([]EntryV2); ok {
+		return e
+	}
+	return nil
+}
+
 // InConstraints - interface defining constraints for the Get function
 type InConstraints interface {
 	[]Entry | []EntryV2 | runtime.Nil
@@ -31,13 +52,6 @@ type InConstraints interface {
 
 func TypeHandler[T InConstraints](r *http.Request, body T) (any, *runtime.Status) {
 	return typeHandler[runtime.LogError](r, body)
-}
-
-// newTypeHandler - templated function providing a TypeHandlerFn via a closure
-func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
-	return func(r *http.Request, body any) (any, *runtime.Status) {
-		return typeHandler[E](r, body)
-	}
 }
 
 func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runtime.Status) {
@@ -137,7 +151,6 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 }
 
 // Scrap
-
 //rows, status := pgxsql.Query(rc.Context(), pgxsql.NewQueryRequestFromValues(content.ResourceNSS, accessLogSelect, values))
 //if !status.OK() {
 //	e.HandleStatus(status, requestId, getLoc)

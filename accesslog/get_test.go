@@ -2,18 +2,24 @@ package accesslog
 
 import (
 	"fmt"
+	"github.com/go-ai-agent/core/runtime/startup"
 	"github.com/go-ai-agent/postgresql/pgxsql"
 	"net/url"
 )
 
+func pgxsqlIsStarted() bool {
+	_, status := pgxsql.TypeHandler(startup.StatusRequest, nil)
+	return status.OK()
+}
+
 func ExamplePing() {
 	err := testStartup()
 	if err != nil {
-		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsql.IsStarted())
+		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsqlIsStarted())
 	} else {
 		defer pgxsql.ClientShutdown()
 		status := ping(nil)
-		fmt.Printf("test: Ping[runtimetest.DebugError](nil) -> [status:%v] [started:%v]\n", status, pgxsql.IsStarted())
+		fmt.Printf("test: Ping[runtimetest.DebugError](nil) -> [status:%v] [started:%v]\n", status, pgxsqlIsStarted())
 	}
 
 	//Output:
@@ -34,7 +40,7 @@ func ExampleGetByteInvalidArguement() {
 func ExampleGet() {
 	err := testStartup()
 	if err != nil {
-		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsql.IsStarted())
+		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsqlIsStarted())
 	} else {
 		defer pgxsql.ClientShutdown()
 		events, status1 := get(nil, "", nil)
@@ -50,7 +56,7 @@ func ExampleGet() {
 func ExampleGetByte() {
 	err := testStartup()
 	if err != nil {
-		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsql.IsStarted())
+		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsqlIsStarted())
 	} else {
 		defer pgxsql.ClientShutdown()
 		buf, status := getByte(nil, "", nil)
@@ -66,7 +72,7 @@ func ExampleGetByte() {
 func ExampleGetFromQuery() {
 	err := testStartup()
 	if err != nil {
-		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsql.IsStarted())
+		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsqlIsStarted())
 	} else {
 		defer pgxsql.ClientShutdown()
 
