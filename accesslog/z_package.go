@@ -3,6 +3,7 @@ package accesslog
 import (
 	"github.com/go-ai-agent/core/httpx"
 	"github.com/go-ai-agent/core/json"
+	"github.com/go-ai-agent/core/resiliency"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
 	"reflect"
@@ -20,16 +21,18 @@ var (
 	pkgPath        = runtime.PathFromUri(PkgUri)
 	locTypeHandler = pkgPath + "/typeHandler"
 	locHttpHandler = pkgPath + "/httpHandler"
-	resourceNID    = "timeseries"
-	resourceNSS    = "access-log"
+	//resourceNID    = "timeseries"
+	resourceNSS = "access-log"
+
+	controller = resiliency.NewBypassController(newTypeHandler[runtime.LogError]())
 )
 
-// newTypeHandler - templated function providing a TypeHandlerFn via a closure
-//func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
-//	return func(r *http.Request, body any) (any, *runtime.Status) {
-//		return typeHandler[E](r, body)
-//	}
-//}
+// newTypeHandler - templated function providing a TypeHandlerFn with  a closure
+func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
+	return func(r *http.Request, body any) (any, *runtime.Status) {
+		return typeHandler[E](r, body)
+	}
+}
 
 func CastEntry(t any) []Entry {
 	if e, ok := t.([]Entry); ok {
@@ -51,7 +54,8 @@ type InConstraints interface {
 }
 
 func TypeHandler[T InConstraints](r *http.Request, body T) (any, *runtime.Status) {
-	return typeHandler[runtime.LogError](r, body)
+	//return typeHandler[runtime.LogError](r, body)
+	return controller.Apply(r, body)
 }
 
 func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runtime.Status) {

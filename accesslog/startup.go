@@ -2,6 +2,7 @@ package accesslog
 
 import (
 	"errors"
+	"github.com/go-ai-agent/core/resiliency"
 	"github.com/go-ai-agent/core/runtime"
 	"github.com/go-ai-agent/core/runtime/startup"
 	"github.com/go-ai-agent/postgresql/pgxsql"
@@ -44,8 +45,19 @@ var messageHandler startup.MessageHandler = func(msg startup.Message) {
 			time.Sleep(wait)
 		}
 		startup.ReplyTo(msg, runtime.NewStatusError(runtime.StatusInvalidArgument, location, errors.New("startup error: pgxsql not started")).SetDuration(time.Since(start)))
+		initController(msg)
 	case startup.ShutdownEvent:
 	}
+}
+
+func initController(msg startup.Message) {
+	// if a controller is configured
+	var cfg resiliency.ControllerConfig
+	cfg.Name = "timeseries:controller"
+	cfg.Primary.Select = func(status *runtime.Status) bool { return true }
+	//	cfg.
+	//	controller = resiliency.NewController[runtime.LogError]()
+
 }
 
 func receive() {
