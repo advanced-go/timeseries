@@ -1,7 +1,6 @@
 package accesslog
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/go-ai-agent/postgresql/pgxdml"
 	"github.com/go-ai-agent/postgresql/pgxsql"
@@ -92,25 +91,6 @@ func Example_put() {
 
 	//Output:
 	//test: Put[runtimetest.DebugError,[]Entry](nil,events) -> [status:OK] [result:{INSERT 0 2 2 true false false false}]
-
-}
-
-func Example_putByte() {
-	err := testStartup()
-	if err != nil {
-		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsqlIsStarted())
-	} else {
-		defer pgxsql.ClientShutdown()
-		events := []Entry{event, event2}
-
-		buf, _ := json.Marshal(&events)
-		tag, status := putByte(nil, "", buf)
-		fmt.Printf("test: putByte[runtimetest.DebugError](nil,VersionCurrent,buf) -> [status:%v] [result:%v]\n", status, tag)
-
-	}
-
-	//Output:
-	//test: PutByte[runtimetest.DebugError](nil,VersionCurrent,buf) -> [status:OK] [result:{INSERT 0 2 2 true false false false}]
 
 }
 

@@ -54,7 +54,7 @@ type BodyConstraints interface {
 }
 
 func TypeHandler[T BodyConstraints](r *http.Request, body T) (any, *runtime.Status) {
-	return controller.Apply(httpx.UpdateHeadersAndContext(r), body) //typeHandler[runtime.LogError](r, body)
+	return controller.Apply(httpx.UpdateHeadersAndContext(r), body)
 }
 
 func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runtime.Status) {
@@ -123,12 +123,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
-		if buf == nil {
-			status = runtime.NewStatus(runtime.StatusInvalidContent)
-			httpx.WriteResponse[E](w, nil, status, nil)
-			return status
-		}
-		_, status = putByte(r.Context(), httpx.GetContentLocation(r), buf)
+		_, status = TypeHandler[[]byte](r, buf)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), locHttpHandler)
 			httpx.WriteResponse[E](w, nil, status, nil)

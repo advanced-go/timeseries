@@ -2,15 +2,13 @@ package accesslog
 
 import (
 	"context"
-	"github.com/go-ai-agent/core/json"
 	"github.com/go-ai-agent/core/runtime"
 	"github.com/go-ai-agent/postgresql/pgxsql"
 	"net/http"
 )
 
 var (
-	getLoc     = pkgPath + "/get"
-	getByteLoc = pkgPath + "/getByte"
+	getLoc = pkgPath + "/get"
 )
 
 // get - function to query for a set of entries, type selected via content Uri, from a datastore
@@ -37,36 +35,6 @@ func get(ctx context.Context, contentUri string, values map[string][]string) (an
 		return nil, runtime.NewStatusError(runtime.StatusInvalidArgument, getLoc, err1)
 	}
 
-}
-
-// getByte - templated function to query for a set of AccessLog entries from a datastore
-func getByte(ctx context.Context, contentLocation string, values map[string][]string) ([]byte, *runtime.Status) {
-	var buf []byte
-
-	switch contentLocation {
-	case "", CurrentEntryUri:
-		entries, status := get(ctx, contentLocation, values)
-		if !status.OK() {
-			return nil, status.AddLocation(getByteLoc)
-		}
-		buf, status = json.Marshal(entries)
-		if !status.OK() {
-			return nil, status.AddLocation(getByteLoc)
-		}
-	case EntryV2Uri:
-		events, status := get(ctx, contentLocation, values)
-		if !status.OK() {
-			return nil, status.AddLocation(getByteLoc)
-		}
-		buf, status = json.Marshal(events)
-		if !status.OK() {
-			return nil, status.AddLocation(getByteLoc)
-		}
-	default:
-		err1 := contentError(contentLocation)
-		return nil, runtime.NewStatusError(http.StatusInternalServerError, getLoc, err1) //.SetCode(runtime.StatusInvalidArgument).SetContent(err1, false)
-	}
-	return buf, runtime.NewStatusOK()
 }
 
 func ping(ctx context.Context) *runtime.Status {

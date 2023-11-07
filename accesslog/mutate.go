@@ -11,8 +11,7 @@ import (
 )
 
 var (
-	putLoc     = pkgPath + "/put"
-	putByteLoc = pkgPath + "/putByte"
+	putLoc = pkgPath + "/put"
 )
 
 func contentError(contentLocation string) error {
@@ -29,6 +28,14 @@ func put(ctx context.Context, contentUri string, data any) (pgxsql.CommandTag, *
 	}
 	switch contentUri {
 	case "", CurrentEntryUri:
+		var events []Entry
+		if buf, ok := data.([]byte); ok {
+			status := json.Unmarshal(buf, &events)
+			if !status.OK() {
+				return pgxsql.CommandTag{}, status
+			}
+			data = events
+		}
 		if entries, ok := data.([]Entry); ok {
 			count = len(entries)
 			if count > 0 {
@@ -38,6 +45,14 @@ func put(ctx context.Context, contentUri string, data any) (pgxsql.CommandTag, *
 			return pgxsql.CommandTag{}, runtime.NewStatusError(runtime.StatusInvalidArgument, putLoc, errors.New("data type is not valid for current content"))
 		}
 	case EntryV2Uri:
+		var events []EntryV2
+		if buf, ok := data.([]byte); ok {
+			status := json.Unmarshal(buf, &events)
+			if !status.OK() {
+				return pgxsql.CommandTag{}, status
+			}
+			data = events
+		}
 		if entries, ok := data.([]EntryV2); ok {
 			count = len(entries)
 			if count > 0 {
@@ -58,44 +73,6 @@ func put(ctx context.Context, contentUri string, data any) (pgxsql.CommandTag, *
 		return ct, status
 	}
 	return pgxsql.CommandTag{}, runtime.NewStatusOK()
-}
-
-// putByte - function to Put a set of log entries into a datastore
-func putByte(ctx context.Context, contentUri string, data []byte) (pgxsql.CommandTag, *runtime.Status) {
-	if data == nil {
-		return pgxsql.CommandTag{}, runtime.NewStatus(runtime.StatusInvalidArgument)
-	}
-	switch contentUri {
-	case "", CurrentEntryUri:
-		var events []Entry
-		status := json.Unmarshal(data, &events)
-		if !status.OK() {
-			return pgxsql.CommandTag{}, status
-		}
-		var tag = pgxsql.CommandTag{}
-
-		tag, status = put(ctx, contentUri, data)
-		if !status.OK() {
-			status.AddLocation(putByteLoc)
-		}
-		return tag, status
-	case EntryV2Uri:
-		var events []EntryV2
-
-		status := json.Unmarshal(data, &events)
-		if !status.OK() {
-			return pgxsql.CommandTag{}, status
-		}
-		var tag = pgxsql.CommandTag{}
-
-		tag, status = put(ctx, contentUri, events)
-		if !status.OK() {
-			status.AddLocation(putByteLoc)
-		}
-		return tag, status
-	default:
-		return pgxsql.CommandTag{}, runtime.NewStatusError(runtime.StatusInvalidArgument, putByteLoc, contentError(contentUri))
-	}
 }
 
 func remove(ctx context.Context, where []pgxdml.Attr) (pgxsql.CommandTag, *runtime.Status) {
