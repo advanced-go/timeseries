@@ -3,6 +3,7 @@ package accesslog
 import (
 	"github.com/go-ai-agent/core/httpx"
 	"github.com/go-ai-agent/core/json"
+	"github.com/go-ai-agent/core/log"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
 	"reflect"
@@ -11,17 +12,19 @@ import (
 type pkg struct{}
 
 var (
-	PkgUri              = reflect.TypeOf(any(pkg{})).PkgPath()
-	HttpHandlerEndpoint = pkgPath + "/HttpHandler"
-	EntryUri            = PkgUri + "/" + reflect.TypeOf(Entry{}).Name()
-	EntryV2Uri          = PkgUri + "/" + reflect.TypeOf(EntryV2{}).Name()
-	CurrentEntryUri     = EntryUri
+	PkgUri          = reflect.TypeOf(any(pkg{})).PkgPath()
+	Pattern         = pkgPath + "/"
+	EntryUri        = PkgUri + "/" + reflect.TypeOf(Entry{}).Name()
+	EntryV2Uri      = PkgUri + "/" + reflect.TypeOf(EntryV2{}).Name()
+	CurrentEntryUri = EntryUri
 
 	pkgPath        = runtime.PathFromUri(PkgUri)
 	locTypeHandler = pkgPath + "/typeHandler"
 	locHttpHandler = pkgPath + "/httpHandler"
 	//resourceNID    = "timeseries"
 	resourceNSS = "access-log"
+	controller  = log.NewController(newTypeHandler[runtime.LogError]())
+	//typeLoc    = pkgPath + "/typeHandler"
 )
 
 // newTypeHandler - templated function providing a TypeHandlerFn with  a closure
@@ -45,13 +48,13 @@ func CastEntryV2(t any) []EntryV2 {
 	return nil
 }
 
-// InConstraints - interface defining constraints for the Get function
-type InConstraints interface {
-	[]Entry | []EntryV2 | runtime.Nil
+// BodyConstraints - interface defining constraints for the TypeHandler body
+type BodyConstraints interface {
+	[]Entry | []EntryV2 | []byte | runtime.Nillable
 }
 
-func TypeHandler[T InConstraints](r *http.Request, body T) (any, *runtime.Status) {
-	return typeHandler[runtime.LogError](r, body)
+func TypeHandler[T BodyConstraints](r *http.Request, body T) (any, *runtime.Status) {
+	return controller.Apply(httpx.UpdateHeadersAndContext(r), body) //typeHandler[runtime.LogError](r, body)
 }
 
 func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runtime.Status) {
@@ -60,15 +63,11 @@ func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runti
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
-	// create a new context with a request id. Not creating a new request as upstream processing doesn't
-	// use http
-	requestId := runtime.GetOrCreateRequestId(r)
-	nc := runtime.NewRequestIdContext(r.Context(), requestId)
 	switch r.Method {
 	case http.MethodGet:
-		entries, status := get(nc, r.Header.Get(httpx.ContentLocation), r.URL.Query())
+		entries, status := get(r.Context(), r.Header.Get(httpx.ContentLocation), r.URL.Query())
 		if !status.OK() {
-			e.Handle(status, requestId, locTypeHandler)
+			e.Handle(status, runtime.RequestId(r), locTypeHandler)
 			return nil, status
 		}
 		if entries == nil {
@@ -76,9 +75,9 @@ func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runti
 		}
 		return entries, status
 	case http.MethodPut:
-		cmdTag, status := put(nc, r.Header.Get(httpx.ContentLocation), body)
+		cmdTag, status := put(r.Context(), r.Header.Get(httpx.ContentLocation), body)
 		if !status.OK() {
-			e.Handle(status, requestId, locTypeHandler)
+			e.Handle(status, runtime.RequestId(r), locTypeHandler)
 			return nil, status
 		}
 		return cmdTag, status
@@ -98,27 +97,19 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)
 	}
-	// create a new context with a request id. Not creating a new request as upstream processing doesn't
-	// use http
-	requestId := runtime.GetOrCreateRequestId(r)
-	nc := runtime.NewRequestIdContext(r.Context(), requestId)
+	r = httpx.UpdateHeadersAndContext(r)
 	switch r.Method {
 	case http.MethodGet:
-		entries, status := get(nc, r.Header.Get(httpx.ContentLocation), r.URL.Query())
-		if !status.OK() {
-			e.Handle(status, requestId, locHttpHandler)
-			httpx.WriteResponse[E](w, nil, status, nil)
-			return status
-		}
-		if entries == nil {
-			status = runtime.NewStatus(http.StatusNotFound)
-			httpx.WriteResponse[E](w, nil, status, nil)
-			return status
-		}
 		var buf []byte
+
+		entries, status := TypeHandler[runtime.Nillable](r, nil) //get(nc, r.Header.Get(httpx.ContentLocation), r.URL.Query())
+		if !status.OK() {
+			httpx.WriteResponse[E](w, nil, status, nil)
+			return status
+		}
 		buf, status = json.Marshal(entries)
 		if !status.OK() {
-			e.Handle(status, requestId, locHttpHandler)
+			e.Handle(status, runtime.RequestId(r), locHttpHandler)
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
@@ -128,7 +119,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	case http.MethodPut:
 		buf, status := httpx.ReadAll(r.Body)
 		if !status.OK() {
-			e.Handle(status, requestId, locHttpHandler)
+			e.Handle(status, runtime.RequestId(r), locHttpHandler)
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
@@ -137,9 +128,9 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
-		_, status = putByte(nc, httpx.GetContentLocation(r), buf)
+		_, status = putByte(r.Context(), httpx.GetContentLocation(r), buf)
 		if !status.OK() {
-			e.Handle(status, requestId, locHttpHandler)
+			e.Handle(status, runtime.RequestId(r), locHttpHandler)
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
 		}

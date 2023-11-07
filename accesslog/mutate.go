@@ -22,7 +22,7 @@ func contentError(contentLocation string) error {
 // put - function to Put a set of log entries into a datastore
 func put(ctx context.Context, contentUri string, data any) (pgxsql.CommandTag, *runtime.Status) {
 	var count = 0
-	var req *pgxsql.Request
+	var req pgxsql.Request
 
 	if data == nil {
 		return pgxsql.CommandTag{}, runtime.NewStatus(runtime.StatusInvalidArgument)
@@ -105,7 +105,7 @@ func remove(ctx context.Context, where []pgxdml.Attr) (pgxsql.CommandTag, *runti
 	return pgxsql.CommandTag{}, runtime.NewStatusOK()
 }
 
-func exec(ctx context.Context, req *pgxsql.Request) (pgxsql.CommandTag, *runtime.Status) {
+func exec(ctx context.Context, req pgxsql.Request) (pgxsql.CommandTag, *runtime.Status) {
 	return pgxsql.Exec(ctx, req)
 }
 
