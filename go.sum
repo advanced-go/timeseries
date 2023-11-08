@@ -4,6 +4,8 @@ github.com/felixge/httpsnoop v1.0.4 h1:NFTV2Zj1bL4mc9sqWACXbQFVBBg2W3GPvqp8/ESS2
 github.com/felixge/httpsnoop v1.0.4/go.mod h1:m8KPJKqk1gH5J9DgRY2ASl2lWCfGKXixSwevea8zH2U=
 github.com/go-ai-agent/core v0.0.0-20231107161741-78d4857a63aa h1:ou4/dx5SKn9AAS7RruKGAk1KMABicbvtiSjDW1PXGfg=
 github.com/go-ai-agent/core v0.0.0-20231107161741-78d4857a63aa/go.mod h1:7ReZEgt5wnossL/Rcx47VnXmRsmHOOK6WzCeDs4cEQI=
+github.com/go-ai-agent/core v0.0.0-20231108153036-f93586748022 h1:/JJJsVMyluiNKuvl6lviTDYu4RcBzqJKi89mz29NK8Q=
+github.com/go-ai-agent/core v0.0.0-20231108153036-f93586748022/go.mod h1:7ReZEgt5wnossL/Rcx47VnXmRsmHOOK6WzCeDs4cEQI=
 github.com/go-ai-agent/postgresql v0.0.0-20231107162753-824d4c609990 h1:sPpZmG7K5CpAsiheZ7P/i7rBgkzfmzjRwSfHCGMUIIs=
 github.com/go-ai-agent/postgresql v0.0.0-20231107162753-824d4c609990/go.mod h1:Edwh/JkUKa5666vYg8hN28ceJDMw8H3t9NtXnlyX4MI=
 github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=

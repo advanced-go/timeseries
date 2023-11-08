@@ -12,25 +12,25 @@ import (
 type pkg struct{}
 
 var (
-	PkgUri          = reflect.TypeOf(any(pkg{})).PkgPath()
-	Pattern         = pkgPath + "/"
-	EntryUri        = PkgUri + "/" + reflect.TypeOf(Entry{}).Name()
-	EntryV2Uri      = PkgUri + "/" + reflect.TypeOf(EntryV2{}).Name()
-	CurrentEntryUri = EntryUri
+	PkgUri         = reflect.TypeOf(any(pkg{})).PkgPath()
+	Pattern        = pkgPath + "/"
+	EntryVariant   = PkgUri + "/" + reflect.TypeOf(Entry{}).Name()
+	EntryV2Variant = PkgUri + "/" + reflect.TypeOf(EntryV2{}).Name()
+	CurrentVariant = EntryVariant
 
 	pkgPath        = runtime.PathFromUri(PkgUri)
 	locTypeHandler = pkgPath + "/typeHandler"
 	locHttpHandler = pkgPath + "/httpHandler"
 	//resourceNID    = "timeseries"
 	resourceNSS = "access-log"
-	controller  = log.NewController(newTypeHandler[runtime.LogError]())
+	controller  = log.NewController2(newDoHandler[runtime.LogError]())
 	//typeLoc    = pkgPath + "/typeHandler"
 )
 
-// newTypeHandler - templated function providing a TypeHandlerFn with  a closure
-func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
-	return func(r *http.Request, body any) (any, *runtime.Status) {
-		return typeHandler[E](r, body)
+// newDoHandler - templated function providing a DoHandler
+func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
+	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
+		return doHandler[E](ctx, r, body)
 	}
 }
 
@@ -53,11 +53,15 @@ type BodyConstraints interface {
 	[]Entry | []EntryV2 | []byte | runtime.Nillable
 }
 
-func TypeHandler[T BodyConstraints](r *http.Request, body T) (any, *runtime.Status) {
-	return controller.Apply(httpx.UpdateHeadersAndContext(r), body)
+func Do[T BodyConstraints](ctx any, method, uri, variant string, body T) (any, *runtime.Status) {
+	req, status := httpx.NewRequest(ctx, method, uri, variant)
+	if !status.OK() {
+		return nil, status
+	}
+	return controller.Apply(ctx, req, body)
 }
 
-func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runtime.Status) {
+func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
 	var e E
 
 	if r == nil {
@@ -102,7 +106,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	case http.MethodGet:
 		var buf []byte
 
-		entries, status := TypeHandler[runtime.Nillable](r, nil) //get(nc, r.Header.Get(httpx.ContentLocation), r.URL.Query())
+		entries, status := Do[runtime.Nillable](r, r.Method, r.URL.String(), r.Header.Get(runtime.ContentLocation), nil)
 		if !status.OK() {
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
@@ -123,7 +127,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
-		_, status = TypeHandler[[]byte](r, buf)
+		_, status = Do[[]byte](r, r.Method, r.URL.String(), r.Header.Get(runtime.ContentLocation), buf)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), locHttpHandler)
 			httpx.WriteResponse[E](w, nil, status, nil)

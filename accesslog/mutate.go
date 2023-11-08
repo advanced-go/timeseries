@@ -27,7 +27,7 @@ func put(ctx context.Context, contentUri string, data any) (pgxsql.CommandTag, *
 		return pgxsql.CommandTag{}, runtime.NewStatus(runtime.StatusInvalidArgument)
 	}
 	switch contentUri {
-	case "", CurrentEntryUri:
+	case "", CurrentVariant:
 		var events []Entry
 		if buf, ok := data.([]byte); ok {
 			status := json.Unmarshal(buf, &events)
@@ -44,7 +44,7 @@ func put(ctx context.Context, contentUri string, data any) (pgxsql.CommandTag, *
 		} else {
 			return pgxsql.CommandTag{}, runtime.NewStatusError(runtime.StatusInvalidArgument, putLoc, errors.New("data type is not valid for current content"))
 		}
-	case EntryV2Uri:
+	case EntryV2Variant:
 		var events []EntryV2
 		if buf, ok := data.([]byte); ok {
 			status := json.Unmarshal(buf, &events)

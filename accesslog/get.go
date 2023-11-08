@@ -18,18 +18,18 @@ func get(ctx context.Context, contentUri string, values map[string][]string) (an
 		return nil, status
 	}
 	switch contentUri {
-	case "", CurrentEntryUri:
+	case "", CurrentVariant:
 		entries, err := pgxsql.Scan[Entry](rows)
 		if err != nil {
 			return nil, runtime.NewStatusError(http.StatusInternalServerError, getLoc, err)
 		}
-		return entries, runtime.NewStatusOK().SetContentTypeAndLocation(CurrentEntryUri)
-	case EntryV2Uri:
+		return entries, runtime.NewStatusOK().SetContentTypeAndLocation(CurrentVariant)
+	case EntryV2Variant:
 		entries, err := pgxsql.Scan[EntryV2](rows)
 		if err != nil {
 			return nil, runtime.NewStatusError(http.StatusInternalServerError, getLoc, err)
 		}
-		return entries, runtime.NewStatusOK().SetContentTypeAndLocation(EntryV2Uri)
+		return entries, runtime.NewStatusOK().SetContentTypeAndLocation(EntryV2Variant)
 	default:
 		err1 := contentError(contentUri)
 		return nil, runtime.NewStatusError(runtime.StatusInvalidArgument, getLoc, err1)
