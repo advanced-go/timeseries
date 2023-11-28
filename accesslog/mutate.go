@@ -4,14 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/go-ai-agent/core/json"
-	"github.com/go-ai-agent/core/runtime"
-	"github.com/go-ai-agent/postgresql/pgxdml"
-	"github.com/go-ai-agent/postgresql/pgxsql"
+	"github.com/advanced-go/core/json2"
+	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/postgresql/pgxdml"
+	"github.com/advanced-go/postgresql/pgxsql"
 )
 
-var (
-	putLoc = pkgPath + "/put"
+const (
+	putLoc = PkgPath + ":put"
 )
 
 func contentError(contentLocation string) error {
@@ -19,7 +19,7 @@ func contentError(contentLocation string) error {
 }
 
 // put - function to Put a set of log entries into a datastore
-func put(ctx context.Context, contentUri string, data any) (pgxsql.CommandTag, *runtime.Status) {
+func put(ctx context.Context, contentUri string, data any) (pgxsql.CommandTag, runtime.Status) {
 	var count = 0
 	var req pgxsql.Request
 
@@ -30,7 +30,7 @@ func put(ctx context.Context, contentUri string, data any) (pgxsql.CommandTag, *
 	case "", CurrentVariant:
 		var events []Entry
 		if buf, ok := data.([]byte); ok {
-			status := json.Unmarshal(buf, &events)
+			status := json2.Unmarshal(buf, &events)
 			if !status.OK() {
 				return pgxsql.CommandTag{}, status
 			}
@@ -47,7 +47,7 @@ func put(ctx context.Context, contentUri string, data any) (pgxsql.CommandTag, *
 	case EntryV2Variant:
 		var events []EntryV2
 		if buf, ok := data.([]byte); ok {
-			status := json.Unmarshal(buf, &events)
+			status := json2.Unmarshal(buf, &events)
 			if !status.OK() {
 				return pgxsql.CommandTag{}, status
 			}
@@ -75,14 +75,14 @@ func put(ctx context.Context, contentUri string, data any) (pgxsql.CommandTag, *
 	return pgxsql.CommandTag{}, runtime.NewStatusOK()
 }
 
-func remove(ctx context.Context, where []pgxdml.Attr) (pgxsql.CommandTag, *runtime.Status) {
+func remove(ctx context.Context, where []pgxdml.Attr) (pgxsql.CommandTag, runtime.Status) {
 	if len(where) > 0 {
 		return exec(ctx, pgxsql.NewDeleteRequest(resourceNSS, deleteSql, where))
 	}
 	return pgxsql.CommandTag{}, runtime.NewStatusOK()
 }
 
-func exec(ctx context.Context, req pgxsql.Request) (pgxsql.CommandTag, *runtime.Status) {
+func exec(ctx context.Context, req pgxsql.Request) (pgxsql.CommandTag, runtime.Status) {
 	return pgxsql.Exec(ctx, req)
 }
 

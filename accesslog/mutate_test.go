@@ -2,8 +2,8 @@ package accesslog
 
 import (
 	"fmt"
-	"github.com/go-ai-agent/postgresql/pgxdml"
-	"github.com/go-ai-agent/postgresql/pgxsql"
+	"github.com/advanced-go/postgresql/pgxdml"
+	"github.com/advanced-go/postgresql/pgxsql"
 	"time"
 )
 

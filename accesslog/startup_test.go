@@ -3,8 +3,8 @@ package accesslog
 import (
 	"errors"
 	"fmt"
-	"github.com/go-ai-agent/core/runtime/startup"
-	"github.com/go-ai-agent/postgresql/pgxsql"
+	"github.com/advanced-go/messaging/core"
+	"github.com/advanced-go/postgresql/pgxsql"
 	"time"
 )
 
@@ -36,8 +36,8 @@ func testStartup() error {
 	if serviceUrl == "" {
 		return errors.New("service Url is empty")
 	}
-	db := startup.Resource{Uri: serviceUrl}
+	db := core.Resource{Uri: serviceUrl}
 	err := pgxsql.ClientStartup(db, nil)
-	c <- startup.Message{Event: startup.StartupEvent}
+	c <- core.Message{Event: core.StartupEvent}
 	return err
 }

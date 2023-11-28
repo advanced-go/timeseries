@@ -2,14 +2,14 @@ package accesslog
 
 import (
 	"fmt"
-	"github.com/go-ai-agent/core/runtime/startup"
-	"github.com/go-ai-agent/postgresql/pgxsql"
+	"github.com/advanced-go/postgresql/pgxsql"
 	"net/url"
 )
 
 func pgxsqlIsStarted() bool {
-	_, status := pgxsql.TypeHandler(startup.StatusRequest, nil)
-	return status.OK()
+	//_, status := pgxsql.TypeHandler(startup.StatusRequest, nil)
+	//return status.OK()
+	return false
 }
 
 func ExamplePing() {
