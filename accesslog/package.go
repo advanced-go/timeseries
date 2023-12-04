@@ -17,23 +17,11 @@ const (
 	EntryV2Variant = PkgPath + ":EntryV2" //+ reflect.TypeOf(EntryV2{}).Name()
 	CurrentVariant = EntryVariant
 
-	//pkgPath        = runtime.PathFromUri(PkgUri)
 	locTypeHandler = PkgPath + "/typeHandler"
 	locHttpHandler = PkgPath + "/httpHandler"
 	//resourceNID    = "timeseries"
 	resourceNSS = "access-log"
-	//controller  = log.NewController2(newDoHandler[runtime.LogError]())
-	//typeLoc    = pkgPath + "/typeHandler"
 )
-
-// newDoHandler - templated function providing a DoHandler
-/*
-func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
-	return func(ctx any, r *http.Request, body any) (any, runtime.Status) {
-		return doHandler[E](ctx, r, body)
-	}
-}
-*/
 
 func CastEntry(t any) []Entry {
 	if e, ok := t.([]Entry); ok {
