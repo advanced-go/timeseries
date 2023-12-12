@@ -1,18 +1,21 @@
 package accesslog
 
 import (
+	"errors"
+	"fmt"
+	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2"
-	"github.com/advanced-go/core/io2"
-	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
+	"net/url"
+	"strings"
 )
 
 type pkg struct{}
 
 const (
-	PkgPath        = "github.com/advanced-go/timeseries"
-	Pattern        = PkgPath + "/"
+	PkgPath        = "github.com/advanced-go/timeseries/accesslog"
+	Pattern        = "/" + PkgPath + "/"
 	EntryVariant   = PkgPath + ":EntryV1" // + reflect.TypeOf(Entry{}).Name()
 	EntryV2Variant = PkgPath + ":EntryV2" //+ reflect.TypeOf(EntryV2{}).Name()
 	CurrentVariant = EntryVariant
@@ -20,113 +23,73 @@ const (
 	locTypeHandler = PkgPath + "/typeHandler"
 	locHttpHandler = PkgPath + "/httpHandler"
 	//resourceNID    = "timeseries"
-	resourceNSS = "access-log"
+	resourceNSS   = "access-log"
+	entryResource = "entry"
+	postEntryLoc  = PkgPath + ":PostEntry"
+	getEntryLoc   = PkgPath + ":GetEntry"
 )
 
-func CastEntry(t any) []Entry {
-	if e, ok := t.([]Entry); ok {
-		return e
+// GetEntry - get entries with headers and uri
+func GetEntry(h http.Header, uri string) (entries []Entry, status runtime.Status) {
+	return getEntry[runtime.Log](h, uri)
+}
+
+func getEntry[E runtime.ErrorHandler](h http.Header, uri string) (entries []Entry, status runtime.Status) {
+	u, err := url.Parse(uri)
+	if err != nil {
+		status = runtime.NewStatusError(runtime.StatusInvalidContent, getEntryLoc, err)
+		return
 	}
-	return nil
+	h = http2.AddRequestIdHeader(h)
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), "GetEntry", -1, "", access.NewStatusCodeClosure(&status))()
+	return getEntryHandler[E](h, u)
 }
 
-func CastEntryV2(t any) []EntryV2 {
-	if e, ok := t.([]EntryV2); ok {
-		return e
-	}
-	return nil
+// PostEntryConstraints - Post constraints
+type PostEntryConstraints interface {
+	[]Entry | []byte | runtime.Nillable
 }
 
-// BodyConstraints - interface defining constraints for the TypeHandler body
-type BodyConstraints interface {
-	[]Entry | []EntryV2 | []byte | runtime.Nillable
+// PostEntry - exchange function
+func PostEntry[T PostEntryConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
+	return postEntry[runtime.Log, T](h, method, uri, body)
 }
 
-func Do[T BodyConstraints](ctx any, method, uri, variant string, body T) (any, runtime.Status) {
-	req, status := http2.NewRequest(ctx, method, uri, variant, nil)
+func postEntry[E runtime.ErrorHandler, T PostEntryConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
+	var r *http.Request
+
+	r, status = http2.NewRequest(h, method, uri, nil)
 	if !status.OK() {
 		return nil, status
 	}
-	return doHandler[runtime.LogError](ctx, req, body)
+	http2.AddRequestId(r)
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), "PostEntry", -1, "", access.NewStatusCodeClosure(&status))()
+	return postEntryHandler[E](r, body)
 }
 
-func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, runtime.Status) {
-	var e E
-
-	if r == nil {
-		return nil, runtime.NewStatus(http.StatusBadRequest)
-	}
-	switch r.Method {
-	case http.MethodGet:
-		entries, status := get(r.Context(), r.Header.Get(http2.ContentLocation), r.URL.Query())
-		if !status.OK() {
-			e.Handle(status, runtime.RequestId(r), locTypeHandler)
-			return nil, status
-		}
-		if entries == nil {
-			status = runtime.NewStatus(http.StatusNotFound)
-		}
-		return entries, status
-	case http.MethodPut:
-		cmdTag, status := put(r.Context(), r.Header.Get(http2.ContentLocation), body)
-		if !status.OK() {
-			e.Handle(status, runtime.RequestId(r), locTypeHandler)
-			return nil, status
-		}
-		return cmdTag, status
-	default:
-	}
-	return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
-}
-
+// HttpHandler - Http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
-	httpHandler[runtime.LogError](w, r)
-}
-
-func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) runtime.Status {
-	var e E
-
 	if r == nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return runtime.NewStatus(http.StatusBadRequest)
+		http2.WriteResponse[runtime.Log](w, nil, runtime.NewStatus(runtime.StatusInvalidArgument), nil)
+		return
 	}
-	r = http2.UpdateHeaders(r)
-	switch r.Method {
-	case http.MethodGet:
-		var buf []byte
-
-		entries, status := Do[runtime.Nillable](r, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), nil)
-		if !status.OK() {
-			http2.WriteResponse[E](w, nil, status, nil)
-			return status
-		}
-		buf, status = json2.Marshal(entries)
-		if !status.OK() {
-			e.Handle(status, runtime.RequestId(r), locHttpHandler)
-			http2.WriteResponse[E](w, nil, status, nil)
-			return status
-		}
-		http2.WriteResponse[E](w, buf, status, []http2.Attr{{http2.ContentType, http2.ContentTypeJson},
-			{http2.ContentLocation, status.ContentHeader().Get(http2.ContentLocation)}})
-		return status
-	case http.MethodPut:
-		buf, status := io2.ReadAll(r.Body)
-		if !status.OK() {
-			e.Handle(status, runtime.RequestId(r), locHttpHandler)
-			http2.WriteResponse[E](w, nil, status, nil)
-			return status
-		}
-		_, status = Do[[]byte](r, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), buf)
-		if !status.OK() {
-			e.Handle(status, runtime.RequestId(r), locHttpHandler)
-			http2.WriteResponse[E](w, nil, status, nil)
-			return status
-		}
-		http2.WriteResponse[E](w, nil, status, nil)
+	_, rsc, ok := http2.UprootUrn(r.URL.Path)
+	if !ok || len(rsc) == 0 {
+		status := runtime.NewStatusWithContent(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid path, not a valid URN: %v", r.URL.Path)), false)
+		http2.WriteResponse[runtime.Log](w, nil, status, nil)
+		return
+	}
+	http2.AddRequestId(r)
+	switch strings.ToLower(rsc) {
+	case entryResource:
+		func() (status runtime.Status) {
+			defer access.LogDeferred(access.InternalTraffic, r, "httpHandler", -1, "", access.NewStatusCodeClosure(&status))()
+			return httpEntryHandler[runtime.Log](w, r)
+		}()
 	default:
+		status := runtime.NewStatusWithContent(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", rsc)), false)
+		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 	}
-	w.WriteHeader(http.StatusMethodNotAllowed)
-	return runtime.NewStatus(http.StatusMethodNotAllowed)
 }
 
 // Scrap

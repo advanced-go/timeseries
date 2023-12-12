@@ -38,6 +38,6 @@ func testStartup() error {
 	}
 	db := core.Resource{Uri: serviceUrl}
 	err := pgxsql.ClientStartup(db, nil)
-	c <- core.Message{Event: core.StartupEvent}
+	//c <- core.Message{Event: core.StartupEvent}
 	return err
 }

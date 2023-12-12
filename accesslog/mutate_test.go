@@ -2,7 +2,6 @@ package accesslog
 
 import (
 	"fmt"
-	"github.com/advanced-go/postgresql/pgxdml"
 	"github.com/advanced-go/postgresql/pgxsql"
 	"time"
 )
@@ -80,8 +79,8 @@ func Example_put() {
 	} else {
 		defer pgxsql.ClientShutdown()
 		events := []Entry{event, event2}
-		tag, status := put(nil, "", events)
-		fmt.Printf("test: put[runtimetest.DebugError,[]Entry](nil,events) -> [status:%v] [result:%v]\n", status, tag)
+		status := put(nil, events)
+		fmt.Printf("test: put(nil,events) -> [status:%v] [result:%v]\n", status, "")
 
 		//body := &httptest.ReaderCloser{Reader: bytes.NewReader(buf), Err: nil}
 		//req, _ := http.NewRequest("", "www.google.com", body)
@@ -94,6 +93,7 @@ func Example_put() {
 
 }
 
+/*
 func Example_update() {
 	err := testStartup()
 	if err != nil {
@@ -131,3 +131,6 @@ func Example_remove() {
 	//test: Delete(nil,where) -> [status:OK] [result:{DELETE 0 0 false false true false}]
 
 }
+
+
+*/

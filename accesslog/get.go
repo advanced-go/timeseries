@@ -1,16 +1,40 @@
 package accesslog
 
 import (
-	"context"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/postgresql/pgxsql"
 	"net/http"
+	"net/url"
 )
 
 const (
-	getLoc = PkgPath + ":get"
+	getLoc             = PkgPath + ":get"
+	getEntryHandlerLoc = PkgPath + ":getEntryHandler"
 )
 
+func getEntryHandler[E runtime.ErrorHandler](h http.Header, uri *url.URL) (t []Entry, status runtime.Status) {
+	var e E
+	//ctx := runtime.NewFileUrlContext(nil, uri.String())
+
+	//t, status = queryEntries(ctx, uri)
+	rows, status1 := pgxsql.Query(nil, pgxsql.NewQueryRequestFromValues(resourceNSS, accessLogSelect, uri.Query()))
+	if !status1.OK() {
+		e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
+		return nil, status
+	}
+	entries, err := pgxsql.Scan[Entry](rows)
+	if err != nil {
+		e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
+		return nil, runtime.NewStatusError(http.StatusInternalServerError, getEntryHandlerLoc, err)
+	}
+	if len(t) == 0 {
+		return t, runtime.NewStatus(http.StatusNotFound)
+	}
+	return entries, runtime.NewStatusOK()
+
+}
+
+/*
 // get - function to query for a set of entries, type selected via content Uri, from a datastore
 func get(ctx context.Context, contentUri string, values map[string][]string) (any, runtime.Status) {
 	rows, status := pgxsql.Query(ctx, pgxsql.NewQueryRequestFromValues(resourceNSS, accessLogSelect, values))
@@ -40,6 +64,9 @@ func get(ctx context.Context, contentUri string, values map[string][]string) (an
 func ping(ctx context.Context) runtime.Status {
 	return pgxsql.Ping(ctx)
 }
+
+
+*/
 
 // Scrap
 /*
