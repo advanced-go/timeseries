@@ -2,7 +2,6 @@ package accesslog
 
 import (
 	"fmt"
-	"github.com/advanced-go/postgresql/pgxsql"
 	"time"
 )
 
@@ -73,20 +72,9 @@ var event2 = Entry{
 }
 
 func Example_put() {
-	err := testStartup()
-	if err != nil {
-		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsqlIsStarted())
-	} else {
-		defer pgxsql.ClientShutdown()
-		events := []Entry{event, event2}
-		status := put(nil, events)
-		fmt.Printf("test: put(nil,events) -> [status:%v] [result:%v]\n", status, "")
-
-		//body := &httptest.ReaderCloser{Reader: bytes.NewReader(buf), Err: nil}
-		//req, _ := http.NewRequest("", "www.google.com", body)
-		//status = Put[runtimetest.DebugError, *http.Request](nil, RscId, req)
-		//fmt.Printf("test: Put(nil,[]byte) -> [status:%v]\n", status)
-	}
+	events := []Entry{event, event2}
+	status := put(nil, events)
+	fmt.Printf("test: put(nil,events) -> [status:%v] [result:%v]\n", status, "")
 
 	//Output:
 	//test: Put[runtimetest.DebugError,[]Entry](nil,events) -> [status:OK] [result:{INSERT 0 2 2 true false false false}]

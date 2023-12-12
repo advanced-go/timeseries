@@ -1,6 +1,7 @@
 package accesslog
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/advanced-go/core/access"
@@ -14,35 +15,24 @@ import (
 type pkg struct{}
 
 const (
-	PkgPath        = "github.com/advanced-go/timeseries/accesslog"
-	Pattern        = "/" + PkgPath + "/"
-	EntryVariant   = PkgPath + ":EntryV1" // + reflect.TypeOf(Entry{}).Name()
-	EntryV2Variant = PkgPath + ":EntryV2" //+ reflect.TypeOf(EntryV2{}).Name()
-	CurrentVariant = EntryVariant
+	PkgPath = "github.com/advanced-go/timeseries/accesslog"
+	Pattern = "/" + PkgPath + "/"
 
-	locTypeHandler = PkgPath + "/typeHandler"
-	locHttpHandler = PkgPath + "/httpHandler"
-	//resourceNID    = "timeseries"
-	resourceNSS   = "access-log"
+	//rscAccessLog   = "access-log"
 	entryResource = "entry"
-	postEntryLoc  = PkgPath + ":PostEntry"
-	getEntryLoc   = PkgPath + ":GetEntry"
+	postEntryLoc  = PkgPath + ":postEntry"
+	getEntryLoc   = PkgPath + ":getEntry"
 )
 
 // GetEntry - get entries with headers and uri
-func GetEntry(h http.Header, uri string) (entries []Entry, status runtime.Status) {
-	return getEntry[runtime.Log](h, uri)
+func GetEntry(ctx context.Context, h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
+	return getEntry[runtime.Log](ctx, h, values)
 }
 
-func getEntry[E runtime.ErrorHandler](h http.Header, uri string) (entries []Entry, status runtime.Status) {
-	u, err := url.Parse(uri)
-	if err != nil {
-		status = runtime.NewStatusError(runtime.StatusInvalidContent, getEntryLoc, err)
-		return
-	}
+func getEntry[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
 	h = http2.AddRequestIdHeader(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), "GetEntry", -1, "", access.NewStatusCodeClosure(&status))()
-	return getEntryHandler[E](h, u)
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), "getEntry", -1, "", access.NewStatusCodeClosure(&status))()
+	return getEntryHandler[E](ctx, h, values, rscAccessLog)
 }
 
 // PostEntryConstraints - Post constraints
@@ -51,20 +41,14 @@ type PostEntryConstraints interface {
 }
 
 // PostEntry - exchange function
-func PostEntry[T PostEntryConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
-	return postEntry[runtime.Log, T](h, method, uri, body)
+func PostEntry[T PostEntryConstraints](ctx context.Context, h http.Header, method string, body T) (t any, status runtime.Status) {
+	return postEntry[runtime.Log, T](ctx, h, method, body)
 }
 
-func postEntry[E runtime.ErrorHandler, T PostEntryConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
-	var r *http.Request
-
-	r, status = http2.NewRequest(h, method, uri, nil)
-	if !status.OK() {
-		return nil, status
-	}
-	http2.AddRequestId(r)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), "PostEntry", -1, "", access.NewStatusCodeClosure(&status))()
-	return postEntryHandler[E](r, body)
+func postEntry[E runtime.ErrorHandler, T PostEntryConstraints](ctx context.Context, h http.Header, method string, body T) (t any, status runtime.Status) {
+	h = http2.AddRequestIdHeader(h)
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), "postEntry", -1, "", access.NewStatusCodeClosure(&status))()
+	return postEntryHandler[E](ctx, h, method, body)
 }
 
 // HttpHandler - Http endpoint
@@ -83,7 +67,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	switch strings.ToLower(rsc) {
 	case entryResource:
 		func() (status runtime.Status) {
-			defer access.LogDeferred(access.InternalTraffic, r, "httpHandler", -1, "", access.NewStatusCodeClosure(&status))()
+			defer access.LogDeferred(access.InternalTraffic, r, "HttpHandler", -1, "", access.NewStatusCodeClosure(&status))()
 			return httpEntryHandler[runtime.Log](w, r)
 		}()
 	default:

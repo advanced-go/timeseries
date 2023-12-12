@@ -1,6 +1,8 @@
 package accesslog
 
 import (
+	"context"
+	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/postgresql/pgxsql"
 	"net/http"
@@ -12,26 +14,33 @@ const (
 	getEntryHandlerLoc = PkgPath + ":getEntryHandler"
 )
 
-func getEntryHandler[E runtime.ErrorHandler](h http.Header, uri *url.URL) (t []Entry, status runtime.Status) {
+func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values, rsc string) (t []Entry, status runtime.Status) {
 	var e E
-	//ctx := runtime.NewFileUrlContext(nil, uri.String())
 
-	//t, status = queryEntries(ctx, uri)
-	rows, status1 := pgxsql.Query(nil, pgxsql.NewQueryRequestFromValues(resourceNSS, accessLogSelect, uri.Query()))
-	if !status1.OK() {
+	t, status = get(ctx, pgxsql.NewQueryRequestFromValues(h, resolve(rsc), accessLogSelect, values))
+	if !status.OK() {
 		e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
-		return nil, status
-	}
-	entries, err := pgxsql.Scan[Entry](rows)
-	if err != nil {
-		e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
-		return nil, runtime.NewStatusError(http.StatusInternalServerError, getEntryHandlerLoc, err)
+		return
 	}
 	if len(t) == 0 {
-		return t, runtime.NewStatus(http.StatusNotFound)
+		status = runtime.NewStatus(http.StatusNotFound)
 	}
-	return entries, runtime.NewStatusOK()
+	return
+}
 
+func get(ctx context.Context, req pgxsql.Request) (t []Entry, status runtime.Status) {
+	if req.IsFileScheme() {
+		return io2.ReadState[[]Entry](req.Uri())
+	}
+	rows, status1 := pgxsql.Query(ctx, req)
+	if !status1.OK() {
+		return nil, status1.AddLocation(getLoc)
+	}
+	t, status = pgxsql.Scan[Entry](rows)
+	if !status.OK() {
+		status.AddLocation(getLoc)
+	}
+	return
 }
 
 /*

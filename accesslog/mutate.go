@@ -18,7 +18,7 @@ func put(ctx context.Context, entries []Entry) runtime.Status {
 	if len(entries) == 0 {
 		return runtime.NewStatusError(runtime.StatusInvalidArgument, putLoc, errors.New("entries are nil"))
 	}
-	req = pgxsql.NewInsertRequest(resourceNSS, accessLogInsert, entries[0].CreateInsertValues(entries))
+	req = pgxsql.NewInsertRequest(nil, "", accessLogInsert, entries[0].CreateInsertValues(entries))
 	_, status := pgxsql.Exec(ctx, req)
 	if !status.OK() {
 		return status.AddLocation(putLoc)

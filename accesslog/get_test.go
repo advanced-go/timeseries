@@ -3,32 +3,24 @@ package accesslog
 import (
 	"fmt"
 	"github.com/advanced-go/core/runtime"
-	"github.com/advanced-go/postgresql/pgxsql"
-	"net/url"
 )
 
-func pgxsqlIsStarted() bool {
-	//_, status := pgxsql.TypeHandler(startup.StatusRequest, nil)
-	//return status.OK()
-	return false
+func getTestResolver(s string) string {
+	return "file://[cwd]/resource/access-log.json"
 }
 
-func ExampleGet() {
-	err := testStartup()
-	if err != nil {
-		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsqlIsStarted())
-	} else {
-		defer pgxsql.ClientShutdown()
-		entries, status1 := getEntryHandler[runtime.Output](nil, nil)
-		fmt.Printf("test: getEntryHandler(nil,nil) -> [status:%v] [entries:%v]\n", status1, entries)
+func ExampleGetEntryHandler() {
+	addResolver(getTestResolver)
+	t, status := getEntryHandler[runtime.Output](nil, nil, nil, rscAccessLog)
 
-	}
+	fmt.Printf("test: getEntryHandler() -> [status:%v] [entries:%v]\n", status, t)
 
 	//Output:
-	//test: getEntryHandler(nil,nil) -> [status:OK] [entries:[{customer7 2024-04-07 08:51:51.532388 -0500 CDT 0 450ms egress new mexico            0 0  0 100 0 false 0 0 false} {customer7 2024-04-07 08:51:51.532388 -0500 CDT 0 450ms egress new mexico            0 0  0 100 0 false 0 0 false}]]
+	//test: getEntryHandler() -> [status:OK] [entries:[{customer1 0001-01-01 00:00:00 +0000 UTC 450 450ms egress texas frisco loma alta timeseries-ingress 12345 timeseries 67890 urn:postgres:exec urn post postgres exec. 200 -1 flags 500 100 25 false 150 10 false false}]]
 
 }
 
+/*
 func ExampleGetFromQuery() {
 	err := testStartup()
 	if err != nil {
@@ -37,7 +29,7 @@ func ExampleGetFromQuery() {
 		defer pgxsql.ClientShutdown()
 
 		u, _ := url.Parse("https://google.com/search?region=oregon")
-		entries, status1 := getEntryHandler[runtime.Output](nil, u)
+		entries, status1 := getEntryHandler[runtime.Output](nil, u.Query())
 		cnt := len(entries)
 		fmt.Printf("test: getEntryHandler(nil,url) -> [status:%v] [entries:%v]\n", status1, cnt)
 	}
@@ -46,3 +38,6 @@ func ExampleGetFromQuery() {
 	//test: getEntryHandler(nil,url) -> [status:OK] [entries:2]
 
 }
+
+
+*/

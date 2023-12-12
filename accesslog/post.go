@@ -15,28 +15,17 @@ const (
 	putEntryLoc         = PkgPath + ":putEntry"
 )
 
-func postEntryHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, body any) (any, runtime.Status) {
 	var e E
 
-	if r == nil {
-		return nil, runtime.NewStatus(http.StatusBadRequest)
-	}
-	ctx := runtime.NewFileUrlContext(nil, r.URL.String())
-	switch strings.ToUpper(r.Method) {
+	//ctx := runtime.NewFileUrlContext(nil, r.URL.String())
+	switch strings.ToUpper(method) {
 	case http.MethodPut:
 		status := putEntry(ctx, body)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(r), postEntryHandlerLoc)
+			e.Handle(status, runtime.RequestId(h), postEntryHandlerLoc)
 		}
 		return nil, status
-		/*
-			case http.MethodDelete:
-				status := deleteEntries(ctx)
-				if !status.OK() {
-					e.Handle(status, runtime.RequestId(r), postEntryHandlerLoc)
-				}
-				return nil, status
-		*/
 	default:
 		return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 	}

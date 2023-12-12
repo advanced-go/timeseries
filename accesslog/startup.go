@@ -15,18 +15,17 @@ const (
 )
 
 var (
-	started  int64
+	ready    int64
 	duration = time.Second * 4
 	agent    exchange.Agent
 )
 
-// IsStarted - determine if this package has completed startup
-func isStarted() bool {
-	return atomic.LoadInt64(&started) != 0
+func isReady() bool {
+	return atomic.LoadInt64(&ready) != 0
 }
 
-func setStarted() {
-	atomic.StoreInt64(&started, 1)
+func setReady() {
+	atomic.StoreInt64(&ready, 1)
 }
 
 func init() {
@@ -45,15 +44,17 @@ var messageHandler core.MessageHandler = func(msg core.Message) {
 	switch msg.Event {
 	case core.StartupEvent:
 		for wait := time.Duration(float64(duration) * 0.25); duration >= 0; duration -= wait {
-			status := runtime.NewStatusOK() //pgxsql.TypeHandler(startup.StatusRequest, nil)
+			status := runtime.NewStatusOK() //pgxsql.Readiness()
 			if status.OK() {
 				core.SendReply(msg, runtime.NewStatusOK().SetDuration(time.Since(start)))
-				setStarted()
+				setReady()
 				return
 			}
 			time.Sleep(wait)
 		}
 		core.SendReply(msg, runtime.NewStatusError(runtime.StatusInvalidArgument, location, errors.New("startup error: pgxsql not started")).SetDuration(time.Since(start)))
 	case core.ShutdownEvent:
+	case core.PingEvent:
+		core.SendReply(msg, runtime.NewStatusOK().SetDuration(time.Since(start)))
 	}
 }

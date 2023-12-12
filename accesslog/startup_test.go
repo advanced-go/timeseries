@@ -1,17 +1,10 @@
 package accesslog
 
-import (
-	"errors"
-	"fmt"
-	"github.com/advanced-go/messaging/core"
-	"github.com/advanced-go/postgresql/pgxsql"
-	"time"
-)
-
 const (
 	serviceUrl = ""
 )
 
+/*
 func Example_Startup() {
 	fmt.Printf("test: IsStarted() -> %v\n", pgxsqlIsStarted())
 	err := testStartup()
@@ -36,8 +29,11 @@ func testStartup() error {
 	if serviceUrl == "" {
 		return errors.New("service Url is empty")
 	}
-	db := core.Resource{Uri: serviceUrl}
-	err := pgxsql.ClientStartup(db, nil)
+	//db := core.Resource{Uri: serviceUrl}
+	//err := pgxsql.ClientStartup(db, nil)
 	//c <- core.Message{Event: core.StartupEvent}
-	return err
+	return nil
 }
+
+
+*/
