@@ -12,28 +12,29 @@ import (
 
 const (
 	postEntryHandlerLoc = PkgPath + ":postEntryHandler"
-	putEntryLoc         = PkgPath + ":putEntry"
+	createEntryLoc      = PkgPath + ":createEntry"
 )
 
 func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, body any) (any, runtime.Status) {
 	var e E
 
-	//ctx := runtime.NewFileUrlContext(nil, r.URL.String())
 	switch strings.ToUpper(method) {
 	case http.MethodPut:
-		status := putEntry(ctx, body)
+		entries, status := createEntries(body)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(h), postEntryHandlerLoc)
+			return nil, status
 		}
+		_, status = put(ctx, h, entries, "test")
 		return nil, status
 	default:
 		return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 	}
 }
 
-func putEntry(ctx context.Context, body any) runtime.Status {
+func createEntries(body any) ([]Entry, runtime.Status) {
 	if body == nil {
-		runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
+		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(createEntryLoc)
 	}
 	var entries []Entry
 
@@ -43,22 +44,19 @@ func putEntry(ctx context.Context, body any) runtime.Status {
 	case []byte:
 		status := json2.Unmarshal(ptr, &entries)
 		if !status.OK() {
-			return status.AddLocation(putEntryLoc)
+			return nil, status.AddLocation(createEntryLoc)
 		}
 	case io.ReadCloser:
 		buf, status := io2.ReadAll(ptr)
 		if !status.OK() {
-			return status.AddLocation(putEntryLoc)
+			return nil, status.AddLocation(createEntryLoc)
 		}
 		status = json2.Unmarshal(buf, &entries)
 		if !status.OK() {
-			return status.AddLocation(putEntryLoc)
+			return nil, status.AddLocation(createEntryLoc)
 		}
 	default:
-		return runtime.NewStatusError(runtime.StatusInvalidContent, putEntryLoc, runtime.NewInvalidBodyTypeError(body))
+		return nil, runtime.NewStatusError(runtime.StatusInvalidContent, createEntryLoc, runtime.NewInvalidBodyTypeError(body))
 	}
-	if len(entries) == 0 {
-		return runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
-	}
-	return put(ctx, entries)
+	return entries, runtime.StatusOK()
 }
