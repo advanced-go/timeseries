@@ -29,9 +29,14 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header
 			return nil, status
 		}
 		if len(entries) == 0 {
-			return nil, runtime.NewStatusError(runtime.StatusInvalidContent, postEntryHandlerLoc, errors.New("error: no entries found"))
+			status = runtime.NewStatusError(runtime.StatusInvalidContent, postEntryHandlerLoc, errors.New("error: no entries found"))
+			e.Handle(status, runtime.RequestId(h), postEntryHandlerLoc)
+			return nil, status
 		}
 		_, status = put(ctx, pgxsql.NewInsertRequest(h, resolve(rsc), accessLogInsert, entries[0].CreateInsertValues(entries)))
+		if !status.OK() {
+			e.Handle(status, runtime.RequestId(r), postEntryHandlerLoc)
+		}
 		return nil, status
 	default:
 		return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
