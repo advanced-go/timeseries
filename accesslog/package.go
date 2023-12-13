@@ -18,22 +18,29 @@ const (
 	PkgPath = "github.com/advanced-go/timeseries/accesslog"
 	Pattern = "/" + PkgPath + "/"
 
-	//rscAccessLog   = "access-log"
 	entryResource = "entry"
-	postEntryLoc  = PkgPath + ":postEntry"
-	getEntryLoc   = PkgPath + ":getEntry"
+
+	getRouteName  = "GetEntry"
+	getEntryLoc   = PkgPath + ":GetEntry"
+	postRouteName = "PostEntry"
+	postEntryLoc  = PkgPath + ":PostEntry"
 )
 
-// GetEntry - get entries with headers and uri
+// GetEntry - get entries with headers and values
 func GetEntry(ctx context.Context, h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
-	return getEntry[runtime.Log](ctx, h, values)
+	h = http2.AddRequestIdHeader(h)
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), getRouteName, -1, "", access.NewStatusCodeClosure(&status))()
+	return getEntryHandler[runtime.Log](ctx, h, values, rscAccessLog)
+	//return getEntry[runtime.Log](ctx, h, values)
 }
 
+/*
 func getEntry[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
 	h = http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), "getEntry", -1, "", access.NewStatusCodeClosure(&status))()
 	return getEntryHandler[E](ctx, h, values, rscAccessLog)
 }
+*/
 
 // PostEntryConstraints - Post constraints
 type PostEntryConstraints interface {
@@ -42,14 +49,19 @@ type PostEntryConstraints interface {
 
 // PostEntry - exchange function
 func PostEntry[T PostEntryConstraints](ctx context.Context, h http.Header, method string, body T) (t any, status runtime.Status) {
-	return postEntry[runtime.Log, T](ctx, h, method, body)
+	h = http2.AddRequestIdHeader(h)
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), postRouteName, -1, "", access.NewStatusCodeClosure(&status))()
+	return postEntryHandler[runtime.Log](ctx, h, method, rscAccessLog, body)
 }
 
+/*
+//return postEntry[runtime.Log, T](ctx, h, method, body)
 func postEntry[E runtime.ErrorHandler, T PostEntryConstraints](ctx context.Context, h http.Header, method string, body T) (t any, status runtime.Status) {
 	h = http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), "postEntry", -1, "", access.NewStatusCodeClosure(&status))()
 	return postEntryHandler[E](ctx, h, method, rscAccessLog, body)
 }
+*/
 
 // HttpHandler - Http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {

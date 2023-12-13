@@ -15,6 +15,7 @@ import (
 const (
 	postEntryHandlerLoc = PkgPath + ":postEntryHandler"
 	createEntryLoc      = PkgPath + ":createEntries"
+	putLoc              = PkgPath + ":put"
 )
 
 func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method, rsc string, body any) (any, runtime.Status) {
@@ -64,4 +65,16 @@ func createEntries(body any) ([]Entry, runtime.Status) {
 		return nil, runtime.NewStatusError(runtime.StatusInvalidContent, createEntryLoc, runtime.NewInvalidBodyTypeError(body))
 	}
 	return entries, runtime.StatusOK()
+}
+
+// put - function to Put a set of log entries into a datastore
+func put(ctx context.Context, req pgxsql.Request) (tag pgxsql.CommandTag, status runtime.Status) {
+	if req.IsFileScheme() {
+		return pgxsql.CommandTag{}, io2.ReadStatus(req.Uri())
+	}
+	tag, status = pgxsql.Exec(ctx, req)
+	if !status.OK() {
+		status.AddLocation(putLoc)
+	}
+	return
 }
