@@ -75,7 +75,7 @@ var event2 = Entry{
 func Example_put() {
 	s := "file://[cwd]/resource/status-504.json"
 	entries := []Entry{event, event2}
-	_, status := put(nil, pgxsql.NewInsertRequest(nil, s, accessLogInsert, entries[0].CreateInsertValues(entries)))
+	_, status := put(nil, pgxsql.NewInsertRequest(nil, s, accessLogInsert, entries[0].CreateInsertValues(entries)), s)
 	fmt.Printf("test: put(nil,events) -> [status:%v]\n", status)
 
 	//Output:

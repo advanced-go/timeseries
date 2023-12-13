@@ -20,9 +20,9 @@ const (
 
 	entryResource = "entry"
 
-	getRouteName  = "GetEntry"
+	getRouteName  = "get-entry"
 	getEntryLoc   = PkgPath + ":GetEntry"
-	postRouteName = "PostEntry"
+	postRouteName = "post-entry"
 	postEntryLoc  = PkgPath + ":PostEntry"
 )
 
@@ -30,17 +30,8 @@ const (
 func GetEntry(ctx context.Context, h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
 	h = http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), getRouteName, -1, "", access.NewStatusCodeClosure(&status))()
-	return getEntryHandler[runtime.Log](ctx, h, values, rscAccessLog)
-	//return getEntry[runtime.Log](ctx, h, values)
+	return getEntryHandler[runtime.Log](ctx, h, values)
 }
-
-/*
-func getEntry[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
-	h = http2.AddRequestIdHeader(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), "getEntry", -1, "", access.NewStatusCodeClosure(&status))()
-	return getEntryHandler[E](ctx, h, values, rscAccessLog)
-}
-*/
 
 // PostEntryConstraints - Post constraints
 type PostEntryConstraints interface {
@@ -51,17 +42,8 @@ type PostEntryConstraints interface {
 func PostEntry[T PostEntryConstraints](ctx context.Context, h http.Header, method string, body T) (t any, status runtime.Status) {
 	h = http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), postRouteName, -1, "", access.NewStatusCodeClosure(&status))()
-	return postEntryHandler[runtime.Log](ctx, h, method, rscAccessLog, body)
+	return postEntryHandler[runtime.Log](ctx, h, method, body)
 }
-
-/*
-//return postEntry[runtime.Log, T](ctx, h, method, body)
-func postEntry[E runtime.ErrorHandler, T PostEntryConstraints](ctx context.Context, h http.Header, method string, body T) (t any, status runtime.Status) {
-	h = http2.AddRequestIdHeader(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), "postEntry", -1, "", access.NewStatusCodeClosure(&status))()
-	return postEntryHandler[E](ctx, h, method, rscAccessLog, body)
-}
-*/
 
 // HttpHandler - Http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {

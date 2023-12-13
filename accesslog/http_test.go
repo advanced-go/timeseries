@@ -12,8 +12,9 @@ import (
 )
 
 const (
-	stateEntry = "file://[cwd]/resource/access-log.json"
-	stateEmpty = "file://[cwd]/resource/empty.json"
+	stateEntry    = "file://[cwd]/resource/access-log.json"
+	stateEmpty    = "file://[cwd]/resource/empty.json"
+	statusFailure = "file://[cwd]/resource/status-504.json"
 )
 
 func _Example_HttpHandler() {
@@ -53,14 +54,14 @@ func Test_httpHandler(t *testing.T) {
 	type args struct {
 		req    string
 		resp   string
-		result string
+		result any
 	}
 	tests := []struct {
 		name string
 		args args
 	}{
 		{"get-entries-empty", args{req: "get-req-v1.txt", resp: "get-resp-v1-empty.txt", result: stateEmpty}},
-		//{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: io2.StatusOK}},
+		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: map[string]string{rscAccessLog: statusFailure}}},
 		//{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", result: stateEntry}},
 	}
 	for _, tt := range tests {
@@ -69,12 +70,7 @@ func Test_httpHandler(t *testing.T) {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
 		}
-		var err error
-		req, err = http2test.UpdateUrl(tt.args.result, req)
-		if err != nil {
-			t.Errorf("UpdateUrl() failure = %v", err)
-			continue
-		}
+		req = req.Clone(runtime.NewLookupContext(nil, tt.args.result))
 		t.Run(tt.name, func(t *testing.T) {
 			w := http2test.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode

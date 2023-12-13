@@ -18,7 +18,7 @@ const (
 	putLoc              = PkgPath + ":put"
 )
 
-func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method, rsc string, body any) (any, runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, body any) (any, runtime.Status) {
 	var e E
 
 	switch strings.ToUpper(method) {
@@ -30,12 +30,12 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header
 		}
 		if len(entries) == 0 {
 			status = runtime.NewStatusError(runtime.StatusInvalidContent, postEntryHandlerLoc, errors.New("error: no entries found"))
-			e.Handle(status, runtime.RequestId(h), postEntryHandlerLoc)
+			e.Handle(status, runtime.RequestId(h), "")
 			return nil, status
 		}
-		_, status = put(ctx, pgxsql.NewInsertRequest(h, resolve(rsc), accessLogInsert, entries[0].CreateInsertValues(entries)))
+		_, status = put(ctx, pgxsql.NewInsertRequest(h, rscAccessLog, accessLogInsert, entries[0].CreateInsertValues(entries)), rscAccessLog)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(r), postEntryHandlerLoc)
+			e.Handle(status, runtime.RequestId(h), postEntryHandlerLoc)
 		}
 		return nil, status
 	default:
@@ -73,9 +73,9 @@ func createEntries(body any) ([]Entry, runtime.Status) {
 }
 
 // put - function to Put a set of log entries into a datastore
-func put(ctx context.Context, req pgxsql.Request) (tag pgxsql.CommandTag, status runtime.Status) {
-	if req.IsFileScheme() {
-		return pgxsql.CommandTag{}, io2.ReadStatus(req.Uri())
+func put(ctx context.Context, req pgxsql.Request, rsc string) (tag pgxsql.CommandTag, status runtime.Status) {
+	if url := runtime.LookupFromContext(ctx, rsc); len(url) > 0 {
+		return pgxsql.CommandTag{}, io2.ReadStatus(url)
 	}
 	tag, status = pgxsql.Exec(ctx, req)
 	if !status.OK() {

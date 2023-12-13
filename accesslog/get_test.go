@@ -11,7 +11,7 @@ func getTestResolver(s string) string {
 
 func ExampleGetEntryHandler() {
 	addResolver(getTestResolver)
-	t, status := getEntryHandler[runtime.Output](nil, nil, nil, rscAccessLog)
+	t, status := getEntryHandler[runtime.Output](nil, nil, nil)
 
 	fmt.Printf("test: getEntryHandler() -> [status:%v] [entries:%v]\n", status, t)
 
