@@ -2,9 +2,11 @@ package accesslog
 
 import (
 	"context"
+	"errors"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/postgresql/pgxsql"
 	"io"
 	"net/http"
 	"strings"
@@ -12,10 +14,10 @@ import (
 
 const (
 	postEntryHandlerLoc = PkgPath + ":postEntryHandler"
-	createEntryLoc      = PkgPath + ":createEntry"
+	createEntryLoc      = PkgPath + ":createEntries"
 )
 
-func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, body any) (any, runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method, rsc string, body any) (any, runtime.Status) {
 	var e E
 
 	switch strings.ToUpper(method) {
@@ -25,7 +27,10 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header
 			e.Handle(status, runtime.RequestId(h), postEntryHandlerLoc)
 			return nil, status
 		}
-		_, status = put(ctx, h, entries, "test")
+		if len(entries) == 0 {
+			return nil, runtime.NewStatusError(runtime.StatusInvalidContent, postEntryHandlerLoc, errors.New("error: no entries found"))
+		}
+		_, status = put(ctx, pgxsql.NewInsertRequest(h, resolve(rsc), accessLogInsert, entries[0].CreateInsertValues(entries)))
 		return nil, status
 	default:
 		return nil, runtime.NewStatus(http.StatusMethodNotAllowed)

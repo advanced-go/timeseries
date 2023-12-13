@@ -22,11 +22,7 @@ func httpEntryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Req
 		http2.WriteResponse[E](w, buf, status, []http2.Attr{{http2.ContentType, http2.ContentTypeJson}})
 		return status
 	case http.MethodPut:
-		_, status := postEntryHandler[E](r.Context(), r.Header, r.Method, r.Body)
-		http2.WriteResponse[E](w, nil, status, nil)
-		return status
-	case http.MethodDelete:
-		_, status := postEntryHandler[E](r.Context(), r.Header, r.Method, nil)
+		_, status := postEntryHandler[E](r.Context(), r.Header, r.Method, rscAccessLog, r.Body)
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	default:

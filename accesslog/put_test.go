@@ -2,6 +2,7 @@ package accesslog
 
 import (
 	"fmt"
+	"github.com/advanced-go/postgresql/pgxsql"
 	"time"
 )
 
@@ -72,12 +73,13 @@ var event2 = Entry{
 }
 
 func Example_put() {
-	events := []Entry{event, event2}
-	status := put(nil, events)
-	fmt.Printf("test: put(nil,events) -> [status:%v] [result:%v]\n", status, "")
+	s := "file://[cwd]/resource/status-504.json"
+	entries := []Entry{event, event2}
+	_, status := put(nil, pgxsql.NewInsertRequest(nil, s, accessLogInsert, entries[0].CreateInsertValues(entries)))
+	fmt.Printf("test: put(nil,events) -> [status:%v]\n", status)
 
 	//Output:
-	//test: Put[runtimetest.DebugError,[]Entry](nil,events) -> [status:OK] [result:{INSERT 0 2 2 true false false false}]
+	//test: put(nil,events) -> [status:Timeout [status code 504 Gateway Timeout error]]
 
 }
 

@@ -48,7 +48,7 @@ func PostEntry[T PostEntryConstraints](ctx context.Context, h http.Header, metho
 func postEntry[E runtime.ErrorHandler, T PostEntryConstraints](ctx context.Context, h http.Header, method string, body T) (t any, status runtime.Status) {
 	h = http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), "postEntry", -1, "", access.NewStatusCodeClosure(&status))()
-	return postEntryHandler[E](ctx, h, method, body)
+	return postEntryHandler[E](ctx, h, method, rscAccessLog, body)
 }
 
 // HttpHandler - Http endpoint
