@@ -17,7 +17,7 @@ const (
 func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []Entry, status runtime.Status) {
 	var e E
 
-	t, status = get(ctx, pgxsql.NewQueryRequestFromValues(h, lookup(rscAccessLog), accessLogSelect, values))
+	t, status = get(ctx, h, values) //pgxsql.NewQueryRequestFromValues(h, lookup(rscAccessLog), accessLogSelect, values))
 	if !status.OK() {
 		e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
 		return
@@ -28,10 +28,11 @@ func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header,
 	return
 }
 
-func get(ctx context.Context, req pgxsql.Request) (t []Entry, status runtime.Status) {
-	if req.IsFileScheme() {
-		return io2.ReadState[[]Entry](req.Uri())
+func get(ctx context.Context, h http.Header, values url.Values) (t []Entry, status runtime.Status) {
+	if rsc, ok := lookup(rscAccessLog); ok {
+		return io2.ReadState[[]Entry](rsc)
 	}
+	req := pgxsql.NewQueryRequestFromValues(h, rscAccessLog, accessLogSelect, values)
 	rows, status1 := pgxsql.Query(ctx, req)
 	if !status1.OK() {
 		return nil, status1.AddLocation(getLoc)

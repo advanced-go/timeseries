@@ -33,7 +33,7 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header
 			e.Handle(status, runtime.RequestId(h), "")
 			return nil, status
 		}
-		_, status = put(ctx, pgxsql.NewInsertRequest(h, lookup(rscAccessLog), accessLogInsert, entries[0].CreateInsertValues(entries)))
+		_, status = put(ctx, h, entries) // pgxsql.NewInsertRequest(h, lookup(rscAccessLog), accessLogInsert, entries[0].CreateInsertValues(entries)))
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(h), postEntryHandlerLoc)
 		}
@@ -73,7 +73,11 @@ func createEntries(body any) ([]Entry, runtime.Status) {
 }
 
 // put - function to Put a set of log entries into a datastore
-func put(ctx context.Context, req pgxsql.Request) (tag pgxsql.CommandTag, status runtime.Status) {
+func put(ctx context.Context, h http.Header, entries []Entry) (tag pgxsql.CommandTag, status runtime.Status) {
+	if rsc, ok := lookup(rscAccessLog); ok {
+		return pgxsql.CommandTag{}, io2.ReadStatus(rsc)
+	}
+	req := pgxsql.NewInsertRequest(h, rscAccessLog, accessLogInsert, entries[0].CreateInsertValues(entries))
 	if req.IsFileScheme() {
 		return pgxsql.CommandTag{}, io2.ReadStatus(req.Uri())
 	}
