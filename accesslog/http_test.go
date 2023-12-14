@@ -71,7 +71,6 @@ func Test_httpHandler(t *testing.T) {
 			continue
 		}
 		setOverrideLookup(tt.args.result)
-		//req = req.Clone(runtime.NewLookupContext(nil, tt.args.result))
 		t.Run(tt.name, func(t *testing.T) {
 			w := http2test.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
