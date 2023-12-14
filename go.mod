@@ -5,7 +5,7 @@ go 1.21.4
 require (
 	github.com/advanced-go/core v0.0.0-20231213160249-1164c7bd336e
 	github.com/advanced-go/messaging v0.0.0-20231204194133-b3daae986e54
-	github.com/advanced-go/postgresql v0.0.0-20231212161559-f288ab78b623
+	github.com/advanced-go/postgresql v0.0.0-20231214165013-fc02b22b3d05
 )
 
 require (
