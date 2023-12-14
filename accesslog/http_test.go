@@ -61,8 +61,9 @@ func Test_httpHandler(t *testing.T) {
 		args args
 	}{
 		{"get-entries-empty", args{req: "get-req-v1.txt", resp: "get-resp-v1-empty.txt", result: stateEmpty}},
-		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: map[string]string{rscAccessLog: statusFailure}}},
-		//{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", result: stateEntry}},
+		{"put-entries-failure", args{req: "put-req-v1.txt", resp: "put-resp-v1-failure.txt", result: map[string]string{rscAccessLog: statusFailure}}},
+		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: io2.StatusOK}},
+		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", result: stateEntry}},
 	}
 	for _, tt := range tests {
 		failures, req, resp := http2test.ReadHttp(basePath, tt.args.req, tt.args.resp)

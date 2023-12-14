@@ -2,6 +2,7 @@ package accesslog
 
 import (
 	"fmt"
+	"github.com/advanced-go/core/runtime"
 	"reflect"
 )
 
@@ -14,7 +15,7 @@ func setOverrideLookup(t any) {
 		overrideLookup = nil
 		return
 	}
-	overrideLookup = LookupFromType(t)
+	overrideLookup = runtime.LookupFromType(t)
 	if overrideLookup == nil {
 		overrideLookup = func(key string) string {
 			return fmt.Sprintf("error: invalid override Lookup type: %v", reflect.TypeOf(t))
@@ -30,22 +31,4 @@ func lookup(key string) string {
 		}
 	}
 	return key
-}
-
-func LookupFromType(t any) func(string) string {
-	switch ptr := t.(type) {
-	case string:
-		return func(k string) string { return ptr }
-	case map[string]string:
-		return func(k string) string {
-			v := ptr[k]
-			if len(v) > 0 {
-				return v
-			}
-			return k
-		}
-	case func(string) string:
-		return ptr
-	}
-	return nil
 }
