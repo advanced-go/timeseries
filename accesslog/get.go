@@ -32,8 +32,7 @@ func get(ctx context.Context, h http.Header, values url.Values) (t []Entry, stat
 	if rsc, ok := lookup(rscAccessLog); ok {
 		return io2.ReadState[[]Entry](rsc)
 	}
-	req := pgxsql.NewQueryRequestFromValues(h, rscAccessLog, accessLogSelect, values)
-	rows, status1 := pgxsql.Query(ctx, req)
+	rows, status1 := pgxsql.Query(ctx, h, rscAccessLog, accessLogSelect, values)
 	if !status1.OK() {
 		return nil, status1.AddLocation(getLoc)
 	}

@@ -77,11 +77,7 @@ func put(ctx context.Context, h http.Header, entries []Entry) (tag pgxsql.Comman
 	if rsc, ok := lookup(rscAccessLog); ok {
 		return pgxsql.CommandTag{}, io2.ReadStatus(rsc)
 	}
-	req := pgxsql.NewInsertRequest(h, rscAccessLog, accessLogInsert, entries[0].CreateInsertValues(entries))
-	if req.IsFileScheme() {
-		return pgxsql.CommandTag{}, io2.ReadStatus(req.Uri())
-	}
-	tag, status = pgxsql.Exec(ctx, req)
+	tag, status = pgxsql.Insert(ctx, h, rscAccessLog, accessLogInsert, entries[0].CreateInsertValues(entries))
 	if !status.OK() {
 		status.AddLocation(putLoc)
 	}
