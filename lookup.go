@@ -1,17 +1,15 @@
-package accesslog
-
-import "github.com/advanced-go/core/runtime"
+package pgxsql
 
 var (
 	overrideLookup func(string) []string
 )
 
-func setOverrideLookup(t any) {
+func setOverrideLookup(t []string) {
 	if t == nil {
 		overrideLookup = nil
 		return
 	}
-	overrideLookup = runtime.LookupFromType[func(string) []string](t)
+	overrideLookup = func(key string) []string { return t }
 }
 
 func lookup(key string) ([]string, bool) {

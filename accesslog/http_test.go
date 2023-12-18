@@ -18,7 +18,7 @@ const (
 )
 
 func _Example_HttpHandler() {
-	access.EnableTestLogHandler()
+	access.EnableTestLogger()
 
 	/*
 		addEntry(nil, []Entry{{ActivityID: "activity-uuid",
@@ -61,8 +61,8 @@ func Test_httpHandler(t *testing.T) {
 		args args
 	}{
 		{"get-entries-empty", args{req: "get-req-v1.txt", resp: "get-resp-v1-empty.txt", result: stateEmpty}},
-		{"put-entries-failure", args{req: "put-req-v1.txt", resp: "put-resp-v1-failure.txt", result: map[string]string{rscAccessLog: statusFailure}}},
-		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: io2.StatusOKUri}},
+		{"put-entries-failure", args{req: "put-req-v1.txt", resp: "put-resp-v1-failure.txt", result: map[string][]string{rscAccessLog: {"", statusFailure}}}},
+		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: []string{"", io2.StatusOKUri}}},
 		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", result: stateEntry}},
 	}
 	for _, tt := range tests {
