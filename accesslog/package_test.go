@@ -9,6 +9,6 @@ func Example_PackageUri() {
 	//fmt.Printf("test: EntryV2Variant -> %v\n", EntryV2Variant)
 
 	//Output:
-	//test: PkgPath =  "github.com/advanced-go/timeseries"
+	//test: PkgPath =  "github.com/advanced-go/timeseries/accesslog"
 
 }

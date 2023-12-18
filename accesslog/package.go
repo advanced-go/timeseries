@@ -30,7 +30,7 @@ const (
 // GetEntry - get entries with headers and values
 func GetEntry(ctx context.Context, h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
 	h = runtime.AddRequestId(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), getRouteName, "", -1, "", access.NewStatusCodeClosure(&status))()
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), getRouteName, "", -1, "", &status)()
 	return getEntryHandler[runtime.Log](ctx, h, values)
 }
 
@@ -42,7 +42,7 @@ type PostEntryConstraints interface {
 // PostEntry - exchange function
 func PostEntry[T PostEntryConstraints](ctx context.Context, h http.Header, method string, body T) (t any, status runtime.Status) {
 	h = runtime.AddRequestId(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), postRouteName, "", -1, "", access.NewStatusCodeClosure(&status))()
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), postRouteName, "", -1, "", &status)()
 	return postEntryHandler[runtime.Log](ctx, h, method, body)
 }
 
@@ -62,7 +62,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	switch strings.ToLower(rsc) {
 	case entryResource:
 		func() (status runtime.Status) {
-			defer access.LogDeferred(access.InternalTraffic, r, httpHandlerRouteName, "", -1, "", access.NewStatusCodeClosure(&status))()
+			defer access.LogDeferred(access.InternalTraffic, r, httpHandlerRouteName, "", -1, "", &status)()
 			return httpEntryHandler[runtime.Log](w, r)
 		}()
 	default:
