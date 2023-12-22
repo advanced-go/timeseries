@@ -8,6 +8,7 @@ import (
 const (
 	updateRsc = "test"
 	updateSql = "UPDATE access_log"
+	status504 = "file://[cwd]/resource/status-504.json"
 )
 
 var event = Entry{
@@ -72,9 +73,8 @@ var event2 = Entry{
 }
 
 func Example_put() {
-	//s := "file://[cwd]/resource/status-504.json"
+	setOverrideLookup(map[string][]string{rscAccessLog: {"", status504}})
 	entries := []Entry{event, event2}
-	//req := pgxsql.NewInsertRequest(nil, s, accessLogInsert, entries[0].CreateInsertValues(entries))
 	_, status := put(nil, nil, entries)
 	fmt.Printf("test: put(nil,events) -> [status:%v]\n", status)
 

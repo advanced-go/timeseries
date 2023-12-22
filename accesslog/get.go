@@ -17,7 +17,7 @@ const (
 func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []Entry, status runtime.Status) {
 	var e E
 
-	t, status = get(ctx, h, values) //pgxsql.NewQueryRequestFromValues(h, lookup(rscAccessLog), accessLogSelect, values))
+	t, status = get(ctx, h, values)
 	if !status.OK() {
 		e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
 		return
@@ -29,8 +29,8 @@ func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header,
 }
 
 func get(ctx context.Context, h http.Header, values url.Values) (t []Entry, status runtime.Status) {
-	if rsc, ok := lookup(rscAccessLog); ok {
-		return io2.ReadResults[[]Entry](rsc)
+	if urls := lookup(rscAccessLog); urls != nil {
+		return io2.ReadResults[[]Entry](urls)
 	}
 	rows, status1 := pgxsql.Query(ctx, h, rscAccessLog, accessLogSelect, values)
 	if !status1.OK() {

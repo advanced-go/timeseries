@@ -5,12 +5,12 @@ import (
 	"github.com/advanced-go/core/runtime"
 )
 
-func getTestResolver(s string) string {
-	return "file://[cwd]/resource/access-log.json"
-}
+const (
+	accessLogState = "file://[cwd]/resource/access-log.json"
+)
 
 func ExampleGetEntryHandler() {
-	addResolver(getTestResolver)
+	setOverrideLookup(map[string][]string{rscAccessLog: {accessLogState}})
 	t, status := getEntryHandler[runtime.Output](nil, nil, nil)
 
 	fmt.Printf("test: getEntryHandler() -> [status:%v] [entries:%v]\n", status, t)
