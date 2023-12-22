@@ -10,7 +10,7 @@ const (
 )
 
 func ExampleGetEntryHandler() {
-	setOverrideLookup(map[string][]string{rscAccessLog: {accessLogState}})
+	lookup.SetOverride(map[string][]string{rscAccessLog: {accessLogState}})
 	t, status := getEntryHandler[runtime.Output](nil, nil, nil)
 
 	fmt.Printf("test: getEntryHandler() -> [status:%v] [entries:%v]\n", status, t)

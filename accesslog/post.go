@@ -74,8 +74,8 @@ func createEntries(body any) ([]Entry, runtime.Status) {
 
 // put - function to Put a set of log entries into a datastore
 func put(ctx context.Context, h http.Header, entries []Entry) (tag pgxsql.CommandTag, status runtime.Status) {
-	if urls := lookup(rscAccessLog); urls != nil {
-		return io2.ReadResults[pgxsql.CommandTag](urls)
+	if url, override := lookup.Value(rscAccessLog); override {
+		return io2.ReadValues[pgxsql.CommandTag](url)
 	}
 	tag, status = pgxsql.Insert(ctx, h, rscAccessLog, accessLogInsert, entries[0].CreateInsertValues(entries))
 	if !status.OK() {

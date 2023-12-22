@@ -1,15 +1,18 @@
 package accesslog
 
-import "github.com/advanced-go/core/runtime"
+import (
+	"github.com/advanced-go/core/uri"
+)
 
 const (
 	rscAccessLog = "access-log"
 )
 
 var (
-	overrideLookup func(string) []string
+	lookup = uri.NewLookup()
 )
 
+/*
 func setOverrideLookup(t any) {
 	if t == nil {
 		overrideLookup = nil
@@ -28,3 +31,6 @@ func lookup(key string) []string {
 	}
 	return nil
 }
+
+
+*/
