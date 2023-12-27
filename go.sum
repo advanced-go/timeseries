@@ -1,9 +1,9 @@
 github.com/advanced-go/core v0.0.0-20231222200601-673d05ff557f h1:Frv5dJ8JRxTMA/h9OywZI1oXLhRuKE1NHadE5GUghcc=
 github.com/advanced-go/core v0.0.0-20231222200601-673d05ff557f/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
-github.com/advanced-go/messaging v0.0.0-20231226105116-c6bcb5142548 h1:/hVug9VnMHDVu2gVJp1kNowLq34OdryQg/53P4at1Ro=
-github.com/advanced-go/messaging v0.0.0-20231226105116-c6bcb5142548/go.mod h1:UApViZpTpYSJn+tF5J3FzBg5GFb3/eske4Nn+aZvTAI=
-github.com/advanced-go/postgresql v0.0.0-20231226111811-d503c6ae48e4 h1:EM2/mJIx5ugAbsTlY/yx7G4AZlNOJc7EzDPjxPgr/WE=
-github.com/advanced-go/postgresql v0.0.0-20231226111811-d503c6ae48e4/go.mod h1:rBp9V8XcsMOwBCcPLKDzvV3JzvbRUrChF/BjwWEY4/w=
+github.com/advanced-go/messaging v0.0.0-20231227153933-11b8f486a9f4 h1:vonWISswW2CdL/nJ7kbHymIPwCv2p2WuNmPHkW5g3Ss=
+github.com/advanced-go/messaging v0.0.0-20231227153933-11b8f486a9f4/go.mod h1:UApViZpTpYSJn+tF5J3FzBg5GFb3/eske4Nn+aZvTAI=
+github.com/advanced-go/postgresql v0.0.0-20231227172159-53721cbbb0f7 h1:tng1+D00ko4SpA3+J6mACpcyxY8Re3VRXlfwdTDxXXY=
+github.com/advanced-go/postgresql v0.0.0-20231227172159-53721cbbb0f7/go.mod h1:XjG/59n22vgELiwfAZjliGCl51Efrh/la2GEbrpIcxw=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
