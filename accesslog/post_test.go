@@ -73,7 +73,7 @@ var event2 = Entry{
 }
 
 func Example_put() {
-	lookup.SetOverride(map[string][]string{rscAccessLog: {"", status504}})
+	lookup.SetOverride(map[string]string{rscAccessLog: status504})
 	entries := []Entry{event, event2}
 	_, status := put(nil, nil, entries)
 	fmt.Printf("test: put(nil,events) -> [status:%v]\n", status)
