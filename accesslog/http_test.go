@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2/http2test"
-	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
+	"net/http/httptest"
 	"reflect"
 	"testing"
 )
@@ -34,12 +34,12 @@ func _Example_HttpHandler() {
 
 	*/
 
-	rec := http2test.NewRecorder()
+	rec := httptest.NewRecorder()
 	req, _ := http.NewRequest("", "https://localhost:8080/advanced-go/example-domain/timeseries/entry", nil)
 	//req.Header.Add(http2.ContentLocation, EntryV1Variant)
 	HttpHandler(rec, req)
 	resp := rec.Result()
-	buf, status := io2.ReadAll(resp.Body)
+	buf, status := runtime.NewBytes(resp)
 	fmt.Printf("test: HttpHandler() -> [code:%v] [status:%v] [data:%v]\n", rec.Code, status, string(buf))
 
 	//Output:
@@ -62,7 +62,7 @@ func Test_httpHandler(t *testing.T) {
 	}{
 		{"get-entries-empty", args{req: "get-req-v1.txt", resp: "get-resp-v1-empty.txt", result: stateEmpty}},
 		{"put-entries-failure", args{req: "put-req-v1.txt", resp: "put-resp-v1-failure.txt", result: map[string]string{rscAccessLog: statusFailure}}},
-		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: io2.StatusOKUri}},
+		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: runtime.StatusOKUri}},
 		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", result: stateEntry}},
 	}
 	for _, tt := range tests {
@@ -73,7 +73,7 @@ func Test_httpHandler(t *testing.T) {
 		}
 		lookup.SetOverride(tt.args.result)
 		t.Run(tt.name, func(t *testing.T) {
-			w := http2test.NewRecorder()
+			w := httptest.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
 			httpEntryHandler[runtime.Output](w, req)
 

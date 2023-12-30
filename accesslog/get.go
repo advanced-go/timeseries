@@ -2,7 +2,6 @@ package accesslog
 
 import (
 	"context"
-	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/postgresql/pgxsql"
 	"net/http"
@@ -30,7 +29,7 @@ func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header,
 
 func get(ctx context.Context, h http.Header, values url.Values) (t []Entry, status runtime.Status) {
 	if url, override := lookup.Value(rscAccessLog); override {
-		return io2.ReadValues[[]Entry](url)
+		return runtime.New[[]Entry](url)
 	}
 	rows, status1 := pgxsql.Query(ctx, h, rscAccessLog, accessLogSelect, values)
 	if !status1.OK() {
