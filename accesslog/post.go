@@ -14,6 +14,8 @@ const (
 	postEntryHandlerLoc = PkgPath + ":postEntryHandler"
 	createEntryLoc      = PkgPath + ":createEntries"
 	putLoc              = PkgPath + ":put"
+	postRouteName       = "post-entry"
+	postEntryLoc        = PkgPath + ":PostEntry"
 )
 
 func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, body any) (any, runtime.Status) {

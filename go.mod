@@ -3,9 +3,8 @@ module github.com/advanced-go/timeseries
 go 1.21.4
 
 require (
-	github.com/advanced-go/core v0.0.0-20231231124242-c93e1c6aba48
-	github.com/advanced-go/messaging v0.0.0-20231227153933-11b8f486a9f4
-	github.com/advanced-go/postgresql v0.0.0-20231230190140-ef2459a78f4c
+	github.com/advanced-go/core v0.0.0-20240116124947-6d0fada62009
+	github.com/advanced-go/postgresql v0.0.0-20240116130357-7bdcb2616c1a
 )
 
 require (

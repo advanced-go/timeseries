@@ -2,30 +2,20 @@ package accesslog
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"github.com/advanced-go/core/access"
-	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
-	"github.com/advanced-go/core/uri"
 	"net/http"
 	"net/url"
-	"strings"
 )
 
 type pkg struct{}
 
 const (
-	PkgPath = "github.com/advanced-go/timeseries/accesslog"
-	Pattern = "/" + PkgPath + "/"
+	PkgPath = "github/advanced-go/timeseries/accesslog"
+	//Pattern = "/" + PkgPath + "/"
+	//httpHandlerRouteName = "http-handler"
+	//entryResource        = "entry"
 
-	httpHandlerRouteName = "http-handler"
-	entryResource        = "entry"
-
-	getRouteName  = "get-entry"
-	getEntryLoc   = PkgPath + ":GetEntry"
-	postRouteName = "post-entry"
-	postEntryLoc  = PkgPath + ":PostEntry"
 )
 
 // GetEntry - get entries with headers and values
@@ -47,6 +37,7 @@ func PostEntry[T PostEntryConstraints](ctx context.Context, h http.Header, metho
 	return postEntryHandler[runtime.Log](ctx, h, method, body)
 }
 
+/*
 // HttpHandler - Http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	if r == nil {
@@ -72,6 +63,8 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+
+*/
 // Scrap
 //rows, status := pgxsql.Query(rc.Context(), pgxsql.NewQueryRequestFromValues(content.ResourceNSS, accessLogSelect, values))
 //if !status.OK() {

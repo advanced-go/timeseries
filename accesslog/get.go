@@ -11,6 +11,8 @@ import (
 const (
 	getLoc             = PkgPath + ":get"
 	getEntryHandlerLoc = PkgPath + ":getEntryHandler"
+	getRouteName       = "get-entry"
+	getEntryLoc        = PkgPath + ":GetEntry"
 )
 
 func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []Entry, status runtime.Status) {

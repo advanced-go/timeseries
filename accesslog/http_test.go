@@ -35,9 +35,9 @@ func _Example_HttpHandler() {
 	*/
 
 	rec := httptest.NewRecorder()
-	req, _ := http.NewRequest("", "https://localhost:8080/advanced-go/example-domain/timeseries/entry", nil)
+	//req, _ := http.NewRequest("", "https://localhost:8080/advanced-go/example-domain/timeseries/entry", nil)
 	//req.Header.Add(http2.ContentLocation, EntryV1Variant)
-	HttpHandler(rec, req)
+	//HttpHandler(rec, req)
 	resp := rec.Result()
 	buf, status := runtime.NewBytes(resp)
 	fmt.Printf("test: HttpHandler() -> [code:%v] [status:%v] [data:%v]\n", rec.Code, status, string(buf))
