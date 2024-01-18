@@ -31,7 +31,7 @@ func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header,
 
 func get(ctx context.Context, h http.Header, values url.Values) (t []Entry, status runtime.Status) {
 	if url, override := lookup.Value(rscAccessLog); override {
-		return runtime.New[[]Entry](url)
+		return runtime.New[[]Entry](url, nil)
 	}
 	rows, status1 := pgxsql.Query(ctx, h, rscAccessLog, accessLogSelect, values)
 	if !status1.OK() {

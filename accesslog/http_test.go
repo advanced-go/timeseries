@@ -39,7 +39,7 @@ func _Example_HttpHandler() {
 	//req.Header.Add(http2.ContentLocation, EntryV1Variant)
 	//HttpHandler(rec, req)
 	resp := rec.Result()
-	buf, status := runtime.NewBytes(resp)
+	buf, status := runtime.ReadAll(resp.Body, nil)
 	fmt.Printf("test: HttpHandler() -> [code:%v] [status:%v] [data:%v]\n", rec.Code, status, string(buf))
 
 	//Output:
