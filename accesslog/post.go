@@ -52,23 +52,15 @@ func createEntries(body any) (entries []Entry, status runtime.Status) {
 	case []Entry:
 		entries = ptr
 	case []byte:
-		entries, status = runtime.New[[]Entry](ptr)
+		entries, status = runtime.New[[]Entry](ptr, nil)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntryLoc)
 		}
 	case io.ReadCloser:
-		entries, status = runtime.New[[]Entry](ptr)
+		entries, status = runtime.New[[]Entry](ptr, nil)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntryLoc)
 		}
-		//buf, status := io2.ReadAll(ptr)
-		//if !status.OK() {
-		//	return nil, status.AddLocation(createEntryLoc)
-		//}
-		//status = json2.Unmarshal(buf, &entries)
-		//if !status.OK() {
-		//	return nil, status.AddLocation(createEntryLoc)
-		//}
 	default:
 		return nil, runtime.NewStatusError(runtime.StatusInvalidContent, createEntryLoc, runtime.NewInvalidBodyTypeError(body))
 	}
@@ -78,7 +70,7 @@ func createEntries(body any) (entries []Entry, status runtime.Status) {
 // put - function to Put a set of log entries into a datastore
 func put(ctx context.Context, h http.Header, entries []Entry) (tag pgxsql.CommandTag, status runtime.Status) {
 	if url, override := lookup.Value(rscAccessLog); override {
-		return runtime.New[pgxsql.CommandTag](url)
+		return runtime.New[pgxsql.CommandTag](url, nil)
 	}
 	tag, status = pgxsql.Insert(ctx, h, rscAccessLog, accessLogInsert, entries[0].CreateInsertValues(entries))
 	if !status.OK() {
