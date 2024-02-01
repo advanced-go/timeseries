@@ -1,0 +1,15 @@
+[
+  {
+    "name":"get",
+    "method":"query",
+    "route": "timeseries-get",
+    "uri":"github/advanced-go/postgresql/pgxsql",
+    "duration":"2s"
+  },
+  {
+    "name":"put",
+    "method":"insert",
+    "uri":"github/advanced-go/postgresql/pgxsql",
+    "duration":"800ms"
+  }
+]

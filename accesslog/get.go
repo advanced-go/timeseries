@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/postgresql/pgxsql"
+	"github.com/jackc/pgx/v5"
 	"net/http"
 	"net/url"
 )
@@ -33,7 +34,12 @@ func get(ctx context.Context, h http.Header, values url.Values) (t []Entry, stat
 	if url, override := lookup.Value(rscAccessLog); override {
 		return runtime.New[[]Entry](url, nil)
 	}
-	rows, status1 := pgxsql.Query(ctx, h, rscAccessLog, accessLogSelect, values)
+	var newCtx context.Context
+	var status1 runtime.Status
+	var rows pgx.Rows
+
+	defer apply(ctx, &newCtx, getControllerName, rscAccessLog, h, func() int { return (*(&status1)).Code() })()
+	rows, status1 = pgxsql.Query(newCtx, h, rscAccessLog, accessLogSelect, values)
 	if !status1.OK() {
 		return nil, status1.AddLocation(getLoc)
 	}

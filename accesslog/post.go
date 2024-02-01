@@ -72,6 +72,9 @@ func put(ctx context.Context, h http.Header, entries []Entry) (tag pgxsql.Comman
 	if url, override := lookup.Value(rscAccessLog); override {
 		return runtime.New[pgxsql.CommandTag](url, nil)
 	}
+	var newCtx context.Context
+
+	defer apply(ctx, &newCtx, putControllerName, rscAccessLog, h, func() int { return (*(&status)).Code() })()
 	tag, status = pgxsql.Insert(ctx, h, rscAccessLog, accessLogInsert, entries[0].CreateInsertValues(entries))
 	if !status.OK() {
 		status.AddLocation(putLoc)

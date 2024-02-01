@@ -19,14 +19,6 @@ var (
 	agent    messaging.Agent
 )
 
-func isReady() bool {
-	return atomic.LoadInt64(&ready) != 0
-}
-
-func setReady() {
-	atomic.StoreInt64(&ready, 1)
-}
-
 func init() {
 	var status runtime.Status
 	agent, status = messaging.NewDefaultAgent(PkgPath, messageHandler, false)
@@ -56,4 +48,12 @@ var messageHandler messaging.MessageHandler = func(msg messaging.Message) {
 	case messaging.PingEvent:
 		messaging.SendReply(msg, runtime.NewStatusOK().SetDuration(time.Since(start)))
 	}
+}
+
+func isReady() bool {
+	return atomic.LoadInt64(&ready) != 0
+}
+
+func setReady() {
+	atomic.StoreInt64(&ready, 1)
 }

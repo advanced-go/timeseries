@@ -12,9 +12,9 @@ import (
 )
 
 const (
-	stateEntry    = "file://[cwd]/resource/access-log.json"
-	stateEmpty    = "file://[cwd]/resource/empty.json"
-	statusFailure = "file://[cwd]/resource/status-504.json"
+	stateEntry    = "file://[cwd]/accesslogtest/access-log.json"
+	stateEmpty    = "file://[cwd]/accesslogtest/empty.json"
+	statusFailure = "file://[cwd]/accesslogtest/status-504.json"
 )
 
 func _Example_HttpHandler() {
@@ -48,7 +48,7 @@ func _Example_HttpHandler() {
 }
 
 func Test_httpHandler(t *testing.T) {
-	basePath := "file://[cwd]/resource/"
+	basePath := "file://[cwd]/accesslogtest/"
 	//deleteEntries(nil)
 	//fmt.Printf("test: Start Entries -> %v\n", len(list))
 	type args struct {
