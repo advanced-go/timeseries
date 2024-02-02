@@ -10,5 +10,5 @@ func ExampleLookupController() {
 
 	//Output:
 	//test: LookupController("get") -> [uri:github/advanced-go/postgresql/pgxsql] [route:timeseries-query] [status:OK]
-	
+
 }
