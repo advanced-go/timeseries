@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	accessLogState = "file://[cwd]/resource/access-log.json"
+	accessLogState = "file://[cwd]/accesslogtest/access-log.json"
 )
 
 func ExampleGetEntryHandler() {

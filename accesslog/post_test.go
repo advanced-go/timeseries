@@ -8,7 +8,7 @@ import (
 const (
 	updateRsc = "test"
 	updateSql = "UPDATE access_log"
-	status504 = "file://[cwd]/resource/status-504.json"
+	status504 = "file://[cwd]/accesslogtest/status-504.json"
 )
 
 var event = Entry{
