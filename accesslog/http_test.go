@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2/http2test"
+	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/http/httptest"
@@ -39,7 +40,7 @@ func _Example_HttpHandler() {
 	//req.Header.Add(http2.ContentLocation, EntryV1Variant)
 	//HttpHandler(rec, req)
 	resp := rec.Result()
-	buf, status := runtime.ReadAll(resp.Body, nil)
+	buf, status := io2.ReadAll(resp.Body, nil)
 	fmt.Printf("test: HttpHandler() -> [code:%v] [status:%v] [data:%v]\n", rec.Code, status, string(buf))
 
 	//Output:
@@ -62,7 +63,7 @@ func Test_httpHandler(t *testing.T) {
 	}{
 		{"get-entries-empty", args{req: "get-req-v1.txt", resp: "get-resp-v1-empty.txt", result: stateEmpty}},
 		{"put-entries-failure", args{req: "put-req-v1.txt", resp: "put-resp-v1-failure.txt", result: map[string]string{rscAccessLog: statusFailure}}},
-		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: runtime.StatusOKUri}},
+		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: io2.StatusOKUri}},
 		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", result: stateEntry}},
 	}
 	for _, tt := range tests {

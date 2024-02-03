@@ -2,6 +2,7 @@ package accesslog
 
 import (
 	"context"
+	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/postgresql/pgxsql"
 	"github.com/jackc/pgx/v5"
@@ -16,7 +17,7 @@ const (
 	getEntryLoc        = PkgPath + ":GetEntry"
 )
 
-func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []Entry, status runtime.Status) {
+func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []Entry, status *runtime.Status) {
 	var e E
 
 	t, status = get(ctx, h, values)
@@ -30,11 +31,11 @@ func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header,
 	return
 }
 
-func get(ctx context.Context, h http.Header, values url.Values) (t []Entry, status runtime.Status) {
+func get(ctx context.Context, h http.Header, values url.Values) (t []Entry, status *runtime.Status) {
 	if url, override := lookup.Value(rscAccessLog); override {
-		return runtime.New[[]Entry](url, nil)
+		return io2.New[[]Entry](url, nil)
 	}
-	var status1 runtime.Status
+	var status1 *runtime.Status
 	var rows pgx.Rows
 
 	rows, status1 = pgxsql.Query(ctx, h, rscAccessLog, accessLogSelect, values)

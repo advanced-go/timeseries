@@ -3,6 +3,7 @@ package accesslog
 import (
 	"context"
 	"errors"
+	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/postgresql/pgxsql"
 	"io"
@@ -18,7 +19,7 @@ const (
 	postEntryLoc        = PkgPath + ":PostEntry"
 )
 
-func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, body any) (any, runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, body any) (any, *runtime.Status) {
 	var e E
 
 	switch strings.ToUpper(method) {
@@ -43,7 +44,7 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header
 	}
 }
 
-func createEntries(body any) (entries []Entry, status runtime.Status) {
+func createEntries(body any) (entries []Entry, status *runtime.Status) {
 	if body == nil {
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(createEntryLoc)
 	}
@@ -52,12 +53,12 @@ func createEntries(body any) (entries []Entry, status runtime.Status) {
 	case []Entry:
 		entries = ptr
 	case []byte:
-		entries, status = runtime.New[[]Entry](ptr, nil)
+		entries, status = io2.New[[]Entry](ptr, nil)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntryLoc)
 		}
 	case io.ReadCloser:
-		entries, status = runtime.New[[]Entry](ptr, nil)
+		entries, status = io2.New[[]Entry](ptr, nil)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntryLoc)
 		}
@@ -68,9 +69,9 @@ func createEntries(body any) (entries []Entry, status runtime.Status) {
 }
 
 // put - function to Put a set of log entries into a datastore
-func put(ctx context.Context, h http.Header, entries []Entry) (tag pgxsql.CommandTag, status runtime.Status) {
+func put(ctx context.Context, h http.Header, entries []Entry) (tag pgxsql.CommandTag, status *runtime.Status) {
 	if url, override := lookup.Value(rscAccessLog); override {
-		return runtime.New[pgxsql.CommandTag](url, nil)
+		return io2.New[pgxsql.CommandTag](url, nil)
 	}
 	tag, status = pgxsql.Insert(ctx, h, rscAccessLog, accessLogInsert, entries[0].CreateInsertValues(entries))
 	if !status.OK() {

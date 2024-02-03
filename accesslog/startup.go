@@ -36,7 +36,7 @@ var messageHandler messaging.MessageHandler = func(msg messaging.Message) {
 		for wait := time.Duration(float64(duration) * 0.25); duration >= 0; duration -= wait {
 			// TO DO : uncomment call to pgxsql.Readiness()
 			//status := pgxsql.Readiness()
-			status := runtime.NewStatusOK()
+			status := runtime.StatusOK()
 			if status.OK() {
 				messaging.SendReply(msg, messaging.NewStatusDuration(http.StatusOK, time.Since(start)))
 				setReady()
