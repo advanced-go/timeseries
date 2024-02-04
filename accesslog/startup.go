@@ -17,7 +17,7 @@ const (
 var (
 	ready    int64
 	duration = time.Second * 4
-	agent    messaging.Agent
+	agent    *messaging.Agent
 )
 
 func init() {
