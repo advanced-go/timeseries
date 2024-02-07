@@ -18,6 +18,10 @@ github.com/advanced-go/core v0.0.0-20240204114459-521b4087f86d h1:aA8b7fdIr1qfqv
 github.com/advanced-go/core v0.0.0-20240204114459-521b4087f86d/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
 github.com/advanced-go/core v0.0.0-20240207112942-b811ec6ef7c6 h1:SsLu8zkKE9WO/919uSqocYz+W3iOBVSstO+sSUoe+6Y=
 github.com/advanced-go/core v0.0.0-20240207112942-b811ec6ef7c6/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
+github.com/advanced-go/core v0.0.0-20240207161530-8a19566dd03b h1:lexdXimF5sbH7dOqoLR2JgeWazEsA748tspIZfwpNVA=
+github.com/advanced-go/core v0.0.0-20240207161530-8a19566dd03b/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
+github.com/advanced-go/core v0.0.0-20240207203103-4ad19fabcb45 h1:OUbnxfQ5HuFdOH66s9YrgrQ9Y7jn5TUnWqSRmlDPG40=
+github.com/advanced-go/core v0.0.0-20240207203103-4ad19fabcb45/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
 github.com/advanced-go/postgresql v0.0.0-20240131200303-4066f64e45d6 h1:CIeLYPhNI2a7FidgenC4bQyrFwxH9rZef23HiYKHhAw=
 github.com/advanced-go/postgresql v0.0.0-20240131200303-4066f64e45d6/go.mod h1:eY4HikSQhsAeOz1TSKNF2ffUWX9mPPHZ7GRKNYDVcT8=
 github.com/advanced-go/postgresql v0.0.0-20240202075936-8e39cef4be92 h1:yFwuu9GghYNsAsnP4j67kEcmLaPcVIonha01dUhNQ7c=
@@ -36,6 +40,12 @@ github.com/advanced-go/postgresql v0.0.0-20240204122359-d12a43090822 h1:r0hWDZTG
 github.com/advanced-go/postgresql v0.0.0-20240204122359-d12a43090822/go.mod h1:R8CHtgnmsAU4na544bTQsqmD3TPYjRnS9yYZv5WBvhM=
 github.com/advanced-go/postgresql v0.0.0-20240207114939-94f27a6de471 h1:pTZ7wVo0h6AZQPgDJ0Q831r1Ez+lZY/Dod/MwrdEGHY=
 github.com/advanced-go/postgresql v0.0.0-20240207114939-94f27a6de471/go.mod h1:/aRu7MkG7G4NKcP+ctB9Bf7hK1x3+LofnIHv106Mkjg=
+github.com/advanced-go/postgresql v0.0.0-20240207115439-bb422c53450e h1:3+xTVJq2m5q7UX/nNuxvguoJ+YbHvUydULaTbJoLS+k=
+github.com/advanced-go/postgresql v0.0.0-20240207115439-bb422c53450e/go.mod h1:/aRu7MkG7G4NKcP+ctB9Bf7hK1x3+LofnIHv106Mkjg=
+github.com/advanced-go/postgresql v0.0.0-20240207181511-25dd687826c4 h1:1rSoXmx8fyvcRZ9AipGhN9cMhtYJmvEg2wE1GpIDoxQ=
+github.com/advanced-go/postgresql v0.0.0-20240207181511-25dd687826c4/go.mod h1:WXKuuDqpxATjuOgXQ34uqZxVgkf+Eu3UazEUqn+V2dA=
+github.com/advanced-go/postgresql v0.0.0-20240207205225-8a359657780d h1:w670/IX12jrk32CG1lIETFThkxW1wgIit6PAZL5fY24=
+github.com/advanced-go/postgresql v0.0.0-20240207205225-8a359657780d/go.mod h1:fKidQyiI1sxCo/YJviZxWaorzXg0mrZF6i1JVBOlB9Q=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
