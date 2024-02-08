@@ -31,7 +31,7 @@ func init() {
 
 var messageHandler messaging.MessageHandler = func(msg *messaging.Message) {
 	start := time.Now()
-	switch msg.Event {
+	switch msg.Event() {
 	case messaging.StartupEvent:
 		for wait := time.Duration(float64(duration) * 0.25); duration >= 0; duration -= wait {
 			// TO DO : uncomment call to pgxsql.Readiness()
