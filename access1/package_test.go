@@ -11,7 +11,7 @@ import (
 func ExampleGet() {
 	h := make(http.Header)
 	h.Add(core.XAuthority, module.Authority)
-	url, _ := url2.Parse("github/advanced-go/timeseries:access?region=*")
+	url, _ := url2.Parse("http://localhpst:8081/github/advanced-go/timeseries:access?region=*")
 	entries, status := Get(nil, h, url)
 	if !status.OK() {
 		fmt.Printf("test: Query() -> [status:%v]\n", status)
