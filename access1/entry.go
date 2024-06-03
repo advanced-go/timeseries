@@ -11,7 +11,7 @@ type Entry struct {
 	StartTime time.Time `json:"start-time"`
 	Duration  int64     `json:"duration"`
 	Traffic   string    `json:"traffic"`
-	CreatedTS string    `json:"created-ts"`
+	CreatedTS time.Time `json:"created-ts"`
 
 	Region     string `json:"region"`
 	Zone       string `json:"zone"`
@@ -35,7 +35,7 @@ type Entry struct {
 	Route          string  `json:"route"`
 	RouteTo        string  `json:"route-to"`
 	Threshold      int     `json:"threshold"`
-	ThresholdFlags string  `json:"flags"`
+	ThresholdFlags string  `json:"threshold-flags"`
 	Timeout        int32   `json:"timeout"`
 	RateLimit      float64 `json:"rate-limit"`
 	RateBurst      int32   `json:"rate-burst"`
@@ -51,7 +51,7 @@ func (Entry) Scan(columnNames []string, values []any) (log Entry, err error) {
 		case TrafficName:
 			log.Traffic = values[i].(string)
 		case CreatedTSName:
-			log.CreatedTS = values[i].(string)
+			log.CreatedTS = values[i].(time.Time)
 
 		case RegionName:
 			log.Region = values[i].(string)
