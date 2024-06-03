@@ -1,17 +1,17 @@
-package accesslog
+package access1
 
 import (
 	"fmt"
-	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/stdlib/core"
 )
 
 const (
-	accessLogState = "file://[cwd]/accesslogtest/access-log.json"
+	accessLogState = "file://[cwd]/access1test/access-log.json"
 )
 
 func ExampleGetEntryHandler() {
 	lookup.SetOverride(map[string]string{rscAccessLog: accessLogState})
-	t, status := getEntryHandler[runtime.Output](nil, nil, nil)
+	t, status := get[core.Output](nil, nil, nil)
 
 	fmt.Printf("test: getEntryHandler() -> [status:%v] [entries:%v]\n", status, t)
 

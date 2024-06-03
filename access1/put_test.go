@@ -1,14 +1,15 @@
-package accesslog
+package access1
 
 import (
 	"fmt"
+	"github.com/advanced-go/stdlib/core"
 	"time"
 )
 
 const (
 	updateRsc = "test"
 	updateSql = "UPDATE access_log"
-	status504 = "file://[cwd]/accesslogtest/status-504.json"
+	status504 = "file://[cwd]/access1test/status-504.json"
 )
 
 var event = Entry{
@@ -75,7 +76,7 @@ var event2 = Entry{
 func Example_put() {
 	lookup.SetOverride(map[string]string{rscAccessLog: status504})
 	entries := []Entry{event, event2}
-	_, status := put(nil, nil, entries)
+	_, status := put[core.Output](nil, nil, entries)
 	fmt.Printf("test: put(nil,events) -> [status:%v]\n", status)
 
 	//Output:

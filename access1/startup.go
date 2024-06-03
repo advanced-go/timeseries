@@ -1,10 +1,11 @@
-package accesslog
+package access1
 
 import (
-	"errors"
 	"fmt"
-	"github.com/advanced-go/core/messaging"
 	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/host"
+	"github.com/advanced-go/stdlib/messaging"
 	"net/http"
 	"sync/atomic"
 	"time"
@@ -21,15 +22,14 @@ var (
 )
 
 func init() {
-	var err error
-	agent, err = messaging.NewDefaultAgent(PkgPath, messageHandler, false)
-	if err != nil {
-		fmt.Printf("init(\"%v\") failure: [%v]\n", PkgPath, err)
+	a, err1 := host.RegisterControlAgent(PkgPath, messageHandler)
+	if err1 != nil {
+		fmt.Printf("init(\"%v\") failure: [%v]\n", PkgPath, err1)
 	}
-	agent.Run()
+	a.Run()
 }
 
-var messageHandler messaging.MessageHandler = func(msg *messaging.Message) {
+func messageHandler(msg *messaging.Message) {
 	start := time.Now()
 	switch msg.Event() {
 	case messaging.StartupEvent:
@@ -38,16 +38,16 @@ var messageHandler messaging.MessageHandler = func(msg *messaging.Message) {
 			//status := pgxsql.Readiness()
 			status := runtime.StatusOK()
 			if status.OK() {
-				messaging.SendReply(msg, messaging.NewStatusDuration(http.StatusOK, time.Since(start)))
+				messaging.SendReply(msg, core.NewStatusDuration(http.StatusOK, time.Since(start)))
 				setReady()
 				return
 			}
 			time.Sleep(wait)
-		}
-		messaging.SendReply(msg, messaging.NewStatusDurationError(runtime.StatusInvalidArgument, time.Since(start), errors.New("startup error: pgxsql not started")))
+		} // TODO
+		//messaging.SendReply(msg, core.NewStatusDurationError(runtime.StatusInvalidArgument, time.Since(start), errors.New("startup error: pgxsql not started")))
 	case messaging.ShutdownEvent:
 	case messaging.PingEvent:
-		messaging.SendReply(msg, messaging.NewStatusDuration(http.StatusOK, time.Since(start)))
+		messaging.SendReply(msg, core.NewStatusDuration(http.StatusOK, time.Since(start)))
 	}
 }
 

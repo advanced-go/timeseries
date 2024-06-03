@@ -1,4 +1,4 @@
-package accesslog
+package access1
 
 import (
 	"github.com/advanced-go/core/uri"

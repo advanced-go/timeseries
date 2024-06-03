@@ -1,4 +1,4 @@
-package accesslog
+package access1
 
 type accessLogV2 struct {
 	Duration string

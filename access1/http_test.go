@@ -1,11 +1,11 @@
-package accesslog
+package access1
 
 import (
 	"fmt"
 	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/io2"
-	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/stdlib/core"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -13,9 +13,9 @@ import (
 )
 
 const (
-	stateEntry    = "file://[cwd]/accesslogtest/access-log.json"
-	stateEmpty    = "file://[cwd]/accesslogtest/empty.json"
-	statusFailure = "file://[cwd]/accesslogtest/status-504.json"
+	stateEntry    = "file://[cwd]/access1test/access-log.json"
+	stateEmpty    = "file://[cwd]/access1test/empty.json"
+	statusFailure = "file://[cwd]/access1test/status-504.json"
 )
 
 func _Example_HttpHandler() {
@@ -49,7 +49,7 @@ func _Example_HttpHandler() {
 }
 
 func Test_httpHandler(t *testing.T) {
-	basePath := "file://[cwd]/accesslogtest/"
+	basePath := "file://[cwd]/access1test/"
 	//deleteEntries(nil)
 	//fmt.Printf("test: Start Entries -> %v\n", len(list))
 	type args struct {
@@ -76,7 +76,7 @@ func Test_httpHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
-			httpEntryHandler[runtime.Output](w, req)
+			httpEntryHandler[core.Output](w, req)
 
 			// kludge for BUG in response recorder
 			w.Result().Header = w.Header()

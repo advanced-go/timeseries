@@ -4,14 +4,15 @@ go 1.21.4
 
 require (
 	github.com/advanced-go/core v0.0.0-20240208190607-e54871224064
-	github.com/advanced-go/postgresql v0.0.0-20240208193712-86e65d4c20b0
-	github.com/jackc/pgx/v5 v5.5.0
+	github.com/advanced-go/postgresql v0.0.0-20240603082142-3e2af7ab854c
+	github.com/advanced-go/stdlib v0.0.0-20240602191337-a7dc19e13cef
 )
 
 require (
-	github.com/google/uuid v1.4.0 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
+	github.com/jackc/pgx/v5 v5.5.0 // indirect
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
 	github.com/stretchr/testify v1.8.2 // indirect
 	golang.org/x/crypto v0.10.0 // indirect
