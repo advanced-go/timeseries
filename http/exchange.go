@@ -27,7 +27,7 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 		return httpx.NewResponse(status, status.Err), status
 	}
 	core.AddRequestId(r.Header)
-	r.Header.Set(core.XAuthority, module.Authority)
+	//r.Header.Set(core.XAuthority, module.Authority)
 	switch strings.ToLower(p.Resource) {
 	case module.AccessResource:
 		return accessExchange(r, p)

@@ -2,15 +2,13 @@ package access1
 
 import (
 	"fmt"
-	"github.com/advanced-go/stdlib/core"
-	"github.com/advanced-go/timeseries/module"
 	"net/http"
 	url2 "net/url"
 )
 
 func ExampleGet() {
 	h := make(http.Header)
-	h.Add(core.XAuthority, module.Authority)
+	//h.Add(core.XAuthority, module.Authority)
 	url, _ := url2.Parse("http://localhpst:8081/github/advanced-go/timeseries:access?region=*")
 	entries, status := Get(nil, h, url)
 	if !status.OK() {
