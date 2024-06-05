@@ -9,17 +9,14 @@ import (
 )
 
 // put - function to Put a set of entries into a datastore
-func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) (tag pgxsql.CommandTag, status *core.Status) {
-	//if url, override := lookup.Value(rscAccessLog); override {
-	//	return io2.New[pgxsql.CommandTag](url, nil)
-	//}
+func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) (h2 http.Header, status *core.Status) {
 	var e E
 
 	if len(body) == 0 {
 		status = core.NewStatusError(core.StatusInvalidContent, errors.New("error: no entries found"))
-		return pgxsql.CommandTag{}, status
+		return nil, status
 	}
-	tag, status = pgxsql.Insert(ctx, h, rscAccessLog, accessLogInsert, body[0].CreateInsertValues(body))
+	_, status = pgxsql.Insert(ctx, h, rscAccessLog, accessLogInsert, body[0].CreateInsertValues(body))
 	if !status.OK() {
 		e.Handle(status, core.RequestId(h))
 	}

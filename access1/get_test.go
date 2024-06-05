@@ -11,9 +11,9 @@ const (
 
 func ExampleGetEntryHandler() {
 	lookup.SetOverride(map[string]string{rscAccessLog: accessLogState})
-	t, status := get[core.Output](nil, nil, nil)
+	entries, _, status := get[core.Output](nil, nil, nil)
 
-	fmt.Printf("test: getEntryHandler() -> [status:%v] [entries:%v]\n", status, t)
+	fmt.Printf("test: getr() -> [status:%v] [entries:%v]\n", status, entries)
 
 	//Output:
 	//test: getEntryHandler() -> [status:OK] [entries:[{customer1 0001-01-01 00:00:00 +0000 UTC 450 450ms egress texas frisco loma alta timeseries-ingress 12345 timeseries 67890 urn:postgres:exec urn post postgres exec. 200 -1 flags 500 100 25 false 150 10 false false}]]
