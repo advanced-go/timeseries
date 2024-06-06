@@ -6,7 +6,7 @@ import (
 	url2 "net/url"
 )
 
-func ExampleGet() {
+func ExampleGet_Package() {
 	h := make(http.Header)
 	//h.Add(core.XAuthority, module.Authority)
 	url, _ := url2.Parse("http://localhpst:8081/github/advanced-go/timeseries:access?region=*")
