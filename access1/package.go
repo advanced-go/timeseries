@@ -33,7 +33,7 @@ func Put(r *http.Request, body []Entry) (http.Header, *core.Status) {
 		}
 		body = content
 	}
-	return put[core.Log](r.Context(), core.AddRequestId(r.Header), body)
+	return put[core.Log](r.Context(), core.AddRequestId(r.Header), body, nil)
 }
 
 /*

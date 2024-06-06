@@ -17,19 +17,13 @@ func get[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.H
 		return nil, h2, core.StatusNotFound()
 	}
 	if query == nil {
-		query = pgxsql.QueryT[T] //(ctx, h, accessLogResource, accessLogSelect, values)
+		query = pgxsql.QueryT[T]
 	}
-	//entries, status = pgxsql.QueryT[Entry](ctx, h, accessLogResource, accessLogSelect, values)
 	entries, status = query(ctx, h, accessLogResource, accessLogSelect, values)
 	if !status.OK() {
 		e.Handle(status, core.RequestId(h))
 		return nil, h2, status
 	}
-	//t, status = pgxsql.Scan[Entry](rows)
-	//if !status.OK() {
-	//	e.Handle(status, core.RequestId(h))
-	//	return nil, h2, status
-	//}
 	if len(entries) == 0 {
 		status = core.NewStatus(http.StatusNotFound)
 	}

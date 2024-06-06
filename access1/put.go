@@ -8,15 +8,20 @@ import (
 	"net/http"
 )
 
+type insertFunc func(context.Context, http.Header, string, string, [][]any, ...any) (pgxsql.CommandTag, *core.Status)
+
 // put - function to Put a set of entries into a datastore
-func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) (h2 http.Header, status *core.Status) {
+func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry, insert insertFunc) (h2 http.Header, status *core.Status) {
 	var e E
 
 	if len(body) == 0 {
 		status = core.NewStatusError(core.StatusInvalidContent, errors.New("error: no entries found"))
 		return nil, status
 	}
-	_, status = pgxsql.Insert(ctx, h, accessLogResource, accessLogInsert, body[0].CreateInsertValues(body))
+	if insert == nil {
+		insert = pgxsql.Insert
+	}
+	_, status = insert(ctx, h, accessLogResource, accessLogInsert, body[0].CreateInsertValues(body))
 	if !status.OK() {
 		e.Handle(status, core.RequestId(h))
 	}

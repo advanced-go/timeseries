@@ -1,8 +1,11 @@
 package access1
 
 import (
+	"context"
 	"fmt"
+	"github.com/advanced-go/postgresql/pgxsql"
 	"github.com/advanced-go/stdlib/core"
+	"net/http"
 	"time"
 )
 
@@ -59,55 +62,17 @@ var event2 = Entry{
 	RateBurst:      105,
 }
 
-func _Example_put() {
-	//lookup.SetOverride(map[string]string{rscAccessLog: status504})
+func testInsert(ctx context.Context, h http.Header, resource, template string, values [][]any, args ...any) (pgxsql.CommandTag, *core.Status) {
+	return pgxsql.CommandTag{}, core.NewStatus(http.StatusTeapot)
+}
+
+func ExamplePut() {
 	entries := []Entry{event, event2}
-	_, status := put[core.Output](nil, nil, entries)
-	fmt.Printf("test: put(nil,events) -> [status:%v]\n", status)
+
+	_, status := put[core.Output](nil, nil, entries, testInsert)
+	fmt.Printf("test: put(nil,nil,entries,testInsert) -> [status:%v]\n", status)
 
 	//Output:
-	//test: put(nil,events) -> [status:Timeout [status code 504 Gateway Timeout error]]
+	//test: put(nil,nil,entries,testInsert) -> [status:I'm A Teapot]
 
 }
-
-/*
-func Example_update() {
-	err := testStartup()
-	if err != nil {
-		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsqlIsStarted())
-	} else {
-		defer pgxsql.ClientShutdown()
-		set := []pgxdml.Attr{{"zone", "vinton"}}
-		where := []pgxdml.Attr{{"region", "iowa"}}
-		req := pgxsql.NewUpdateRequest(updateRsc, updateSql, set, where)
-
-		tag, status := exec(nil, req)
-		fmt.Printf("test: update(nil,req) -> [status:%v] [result:%v]\n", status, tag)
-
-	}
-
-	//Output:
-	//test: Update(nil,req) -> [status:OK] [result:{UPDATE 6 6 false true false false}]
-
-}
-
-func Example_remove() {
-	err := testStartup()
-	if err != nil {
-		fmt.Printf("test: ClientStartup() -> [error:%v] [started:%v]\n", err, pgxsqlIsStarted())
-	} else {
-		defer pgxsql.ClientShutdown()
-		where := []pgxdml.Attr{{"region", "texas"}}
-
-		tag, status := remove(nil, where)
-		fmt.Printf("test: remove(nil,where) -> [status:%v] [result:%v]\n", status, tag)
-
-	}
-
-	//Output:
-	//test: Delete(nil,where) -> [status:OK] [result:{DELETE 0 0 false false true false}]
-
-}
-
-
-*/
