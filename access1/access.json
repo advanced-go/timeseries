@@ -23,7 +23,7 @@
     "route":"google-search",
     "route-to":"primary",
     "threshold":0,
-    "th-code":"",
+    "threshold-flags":"",
     "timeout":500,
     "rate-limit":100,
     "rate-burst":10
