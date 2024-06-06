@@ -11,10 +11,6 @@ import (
 	"time"
 )
 
-const (
-	location = PkgPath + ":startup"
-)
-
 var (
 	ready    int64
 	duration = time.Second * 4
