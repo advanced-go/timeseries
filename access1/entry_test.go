@@ -2,7 +2,7 @@ package access1
 
 import (
 	"fmt"
-	"github.com/advanced-go/core/access"
+	"github.com/advanced-go/stdlib/access"
 	"github.com/advanced-go/stdlib/json"
 	"time"
 )

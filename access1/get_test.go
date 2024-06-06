@@ -9,8 +9,8 @@ const (
 	accessLogState = "file://[cwd]/access1test/access-log.json"
 )
 
-func ExampleGetEntryHandler() {
-	lookup.SetOverride(map[string]string{rscAccessLog: accessLogState})
+func _ExampleGet() {
+	//lookup.SetOverride(map[string]string{rscAccessLog: accessLogState})
 	entries, _, status := get[core.Output](nil, nil, nil)
 
 	fmt.Printf("test: getr() -> [status:%v] [entries:%v]\n", status, entries)

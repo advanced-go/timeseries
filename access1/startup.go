@@ -2,7 +2,6 @@ package access1
 
 import (
 	"fmt"
-	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/host"
 	"github.com/advanced-go/stdlib/messaging"
@@ -14,7 +13,6 @@ import (
 var (
 	ready    int64
 	duration = time.Second * 4
-	agent    *messaging.Agent
 )
 
 func init() {
@@ -32,7 +30,7 @@ func messageHandler(msg *messaging.Message) {
 		for wait := time.Duration(float64(duration) * 0.25); duration >= 0; duration -= wait {
 			// TO DO : uncomment call to pgxsql.Readiness()
 			//status := pgxsql.Readiness()
-			status := runtime.StatusOK()
+			status := core.StatusOK()
 			if status.OK() {
 				messaging.SendReply(msg, core.NewStatusDuration(http.StatusOK, time.Since(start)))
 				setReady()
@@ -40,7 +38,7 @@ func messageHandler(msg *messaging.Message) {
 			}
 			time.Sleep(wait)
 		} // TODO
-		//messaging.SendReply(msg, core.NewStatusDurationError(runtime.StatusInvalidArgument, time.Since(start), errors.New("startup error: pgxsql not started")))
+		//messaging.SendReply(msg, core.NewStatusDurationError(core.StatusInvalidArgument, time.Since(start), errors.New("startup error: pgxsql not started")))
 	case messaging.ShutdownEvent:
 	case messaging.PingEvent:
 		messaging.SendReply(msg, core.NewStatusDuration(http.StatusOK, time.Since(start)))

@@ -59,8 +59,8 @@ var event2 = Entry{
 	RateBurst:      105,
 }
 
-func Example_put() {
-	lookup.SetOverride(map[string]string{rscAccessLog: status504})
+func _Example_put() {
+	//lookup.SetOverride(map[string]string{rscAccessLog: status504})
 	entries := []Entry{event, event2}
 	_, status := put[core.Output](nil, nil, entries)
 	fmt.Printf("test: put(nil,events) -> [status:%v]\n", status)

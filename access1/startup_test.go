@@ -2,8 +2,8 @@ package access1
 
 import (
 	"fmt"
-	"github.com/advanced-go/core/messaging"
 	"github.com/advanced-go/postgresql/pgxsql"
+	"github.com/advanced-go/stdlib/messaging"
 	"net/http"
 )
 

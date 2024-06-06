@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	PkgPath = "github/advanced-go/timeseries/access1"
+	PkgPath           = "github/advanced-go/timeseries/access1"
+	accessLogResource = "access-log"
 )
 
 // Get - resource GET
@@ -20,8 +21,8 @@ func Get(ctx context.Context, h http.Header, values url.Values) (entries []Entry
 
 // Put - resource PUT, with optional content override
 func Put(r *http.Request, body []Entry) (http.Header, *core.Status) {
-	if r == nil || r.URL == nil {
-		return nil, core.NewStatusError(core.StatusInvalidArgument, errors.New("invalid URL"))
+	if r == nil {
+		return nil, core.NewStatusError(core.StatusInvalidArgument, errors.New("error: request is nil"))
 	}
 	if body == nil {
 		content, status := json2.New[[]Entry](r.Body, r.Header)
@@ -34,22 +35,6 @@ func Put(r *http.Request, body []Entry) (http.Header, *core.Status) {
 	}
 	return put[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 }
-
-/*
-// PostEntryConstraints - Post constraints
-type PostEntryConstraints interface {
-	[]Entry | []byte | runtime.Nillable
-}
-
-// PostEntry - exchange function
-func PostEntry[T PostEntryConstraints](ctx context.Context, h http.Header, method string, body T) (t any, status *runtime.Status) {
-	h = runtime.AddRequestId(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), postRouteName, "", -1, "", access.StatusCode(&status))()
-	return postEntryHandler[runtime.Log](ctx, h, method, body)
-}
-
-
-*/
 
 /*
 // HttpHandler - Http endpoint
