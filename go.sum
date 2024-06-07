@@ -1,5 +1,5 @@
-github.com/advanced-go/postgresql v0.0.0-20240606143434-4d2f55994ee9 h1:tqT5s6x4udvSNIlOlLv7QhJkygtYePlT3wkWaUqbEdE=
-github.com/advanced-go/postgresql v0.0.0-20240606143434-4d2f55994ee9/go.mod h1:cm93rE9EsLCYxHE5+LgtMBkISHfS5APQKZ1TzPiHSOw=
+github.com/advanced-go/postgresql v0.0.0-20240607085814-5a8dcdac7229 h1:cNVKoQrcoZdvt9p6cylMeHihOtiyN/vMJG09osy5reU=
+github.com/advanced-go/postgresql v0.0.0-20240607085814-5a8dcdac7229/go.mod h1:EV6O4GiOILYkaoeaF2eHjk30EqZ90cfixqum6vYtR7k=
 github.com/advanced-go/stdlib v0.0.0-20240607083544-0491deb5c330 h1:4eovDLcJhnHeW7dXz+13dKSYXdP/B5vxe7fjn6hhhmI=
 github.com/advanced-go/stdlib v0.0.0-20240607083544-0491deb5c330/go.mod h1:bvuWc7Tx57LArgrEvbPxKW4hvIYGS3pw7iG4P6xofoQ=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
