@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/advanced-go/postgresql/pgxsql"
 	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/timeseries/module"
 	"net/http"
 )
 
@@ -20,6 +21,9 @@ func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry, 
 	}
 	if insert == nil {
 		insert = pgxsql.Insert
+	}
+	if h != nil {
+		h.Set(core.XFrom, module.Authority)
 	}
 	_, status = insert(ctx, h, accessLogResource, accessLogInsert, body[0].CreateInsertValues(body))
 	if !status.OK() {

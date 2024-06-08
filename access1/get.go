@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/advanced-go/postgresql/pgxsql"
 	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/timeseries/module"
 	"net/http"
 	"net/url"
 )
@@ -18,6 +19,9 @@ func get[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.H
 	}
 	if query == nil {
 		query = pgxsql.QueryT[T]
+	}
+	if h != nil {
+		h.Set(core.XFrom, module.Authority)
 	}
 	entries, status = query(ctx, h, accessLogResource, accessLogSelect, values)
 	if !status.OK() {
