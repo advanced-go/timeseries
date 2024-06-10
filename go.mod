@@ -3,7 +3,7 @@ module github.com/advanced-go/timeseries
 go 1.21.4
 
 require (
-	github.com/advanced-go/postgresql v0.0.0-20240609172647-49f1d3541007
+	github.com/advanced-go/postgresql v0.0.0-20240610131415-8a5c443044c4
 	github.com/advanced-go/stdlib v0.0.0-20240609152119-8e3aa89b2647
 )
 
